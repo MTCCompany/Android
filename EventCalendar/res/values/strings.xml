@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">EventCalendar</string>
+	<string name="sunday">Sun</string>
+	<string name="monday">Mon</string>
+	<string name="tuesday">Tue</string>
+	<string name="wednesday">Wed</string>
+	<string name="thursday">Thu</string>
+	<string name="friday">Fri</string>
+	<string name="saturday">Sat</string>
+	<string name="prevMonth">PrevMonth</string>
+	<string name="nextMonth">NextMonth</string>
+	<string name="title">Title</string>
+	<string name="startTime">Start:</string>
+	<string name="endTime">End:</string>
+	<string name="allday">All day</string>
+	<string name="place">Place</string>
+	<string name="content">Content</string>
+	<string name="save">Save</string>
+	<string name="discard">Discard</string>
+	<string name="newEvent">Create new event</string>
+	<string name="cancel">Cancel</string>
+	<string name="deleteOK">Delete</string>
+	<string name="deleteConfirm">Are you sure you want to delete event?</string>
+	<string name="sync">Sync to Google Calendar</string>
+	<string name="oauthcode">Code</string>
+	<string name="pastetext">Please paste the copied code from web page.</string>
+	<string name="nowOnSync">Now on sync to Google calendar ...</string>
+	<string name="notification">Alarm Notification</string>
+	<string name="noevents">No Events</string>
+</resources>

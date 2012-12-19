@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">カレンダー</string>
+	<string name="sunday">日</string>
+	<string name="monday">月</string>
+	<string name="tuesday">火</string>
+	<string name="wednesday">水</string>
+	<string name="thursday">木</string>
+	<string name="friday">金</string>
+	<string name="saturday">土</string>
+	<string name="prevMonth">前月</string>
+	<string name="nextMonth">次月</string>
+	<string name="title">予定</string>
+	<string name="startTime">開始:</string>
+	<string name="endTime">終了:</string>
+	<string name="allday">終日</string>
+	<string name="place">場所</string>
+	<string name="content">説明</string>
+	<string name="save">保存</string>
+	<string name="discard">破棄</string>
+	<string name="newEvent">新しい予定を作成</string>
+	<string name="cancel">キャンセル</string>
+	<string name="deleteOK">削除</string>
+	<string name="deleteConfirm">削除してよろしいですか？</string>
+	<string name="sync">Googleカレンダーと同期</string>
+	<string name="oauthcode">コード</string>
+	<string name="pastetext">テキスト欄にコードを張り付けてください。</string>
+	<string name="nowOnSync">Googleカレンダーに同期中...</string>
+</resources>
