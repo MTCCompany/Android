@@ -29,7 +29,7 @@ public class WidgetService extends Service {
 	public void updateWidget(Context context){
 		// カレンダーのデータベースから直近の予定を取り出す。
 		GregorianCalendar cal = new GregorianCalendar();
-		String nowDateStr = CommonCls.toDBDateString(cal);
+		String nowDateStr = DateStrCls.toDBDateString(cal);
 		ContentResolver resolver = context.getContentResolver();
 		String[] projection = {EventInfo.START_TIME,EventInfo.TITLE};
 		String selection = EventInfo.DELETED + "= 0 and " + EventInfo.START_TIME + "> ?";
@@ -40,10 +40,10 @@ public class WidgetService extends Service {
 		StringBuilder events = new StringBuilder();
 		if(c.moveToNext()){
 			String t = c.getString(c.getColumnIndex(EventInfo.START_TIME));
-			Date startTime = CommonCls.toCalendar(t).getTime();
-			events.append(CommonCls.dateFormat.format(startTime));
+			Date startTime = DateStrCls.toCalendar(t).getTime();
+			events.append(DateStrCls.dateFormat.format(startTime));
 			events.append(" ");
-			events.append(CommonCls.timeFormat.format(startTime));
+			events.append(DateStrCls.timeFormat.format(startTime));
 			events.append("\n");
 			events.append(c.getString(c.getColumnIndex(EventInfo.TITLE)));
 		}else{

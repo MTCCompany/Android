@@ -132,21 +132,21 @@ public class EventInfo {
 	}
 
 	public void setStart(String dateString){
-		this.mStart = CommonCls.toCalendar(dateString);
+		this.mStart = DateStrCls.toCalendar(dateString);
 	}
 
 	public Calendar getStart() {
 		return mStart;
 	}
 	public String getStartString(){
-		return CommonCls.toDBDateString(mStart);
+		return DateStrCls.toDBDateString(mStart);
 	}
 	public String getStartDateString(){
-		return CommonCls.dateFormat.format(mStart.getTime());
+		return DateStrCls.dateFormat.format(mStart.getTime());
 	}
 
 	public String getStartTimeString(){
-		return CommonCls.timeFormat.format(mStart.getTime());
+		return DateStrCls.timeFormat.format(mStart.getTime());
 	}
 
 	public void setEnd(GregorianCalendar mEnd) {
@@ -154,11 +154,11 @@ public class EventInfo {
 	}
 
 	public String getEndString(){
-		return CommonCls.toDBDateString(mEnd);
+		return DateStrCls.toDBDateString(mEnd);
 	}
 
 	public void setEnd(String dateString){
-		this.mEnd = CommonCls.toCalendar(dateString);
+		this.mEnd = DateStrCls.toCalendar(dateString);
 	}
 
 	public Calendar getEnd() {
@@ -166,11 +166,11 @@ public class EventInfo {
 	}
 
 	public String getEndDateString(){
-		return CommonCls.dateFormat.format(mEnd.getTime());
+		return DateStrCls.dateFormat.format(mEnd.getTime());
 	}
 
 	public String getEndTimeString(){
-		return CommonCls.timeFormat.format(mEnd.getTime());
+		return DateStrCls.timeFormat.format(mEnd.getTime());
 	}
 
 	public void setContent(String mContent) {
@@ -203,7 +203,7 @@ public class EventInfo {
 	}
 
 	public void setPublished(String date) {
-		this.mPublished = CommonCls.toCalendar(date);
+		this.mPublished = DateStrCls.toCalendar(date);
 	}
 
 	public GregorianCalendar getPublished() {
@@ -211,7 +211,7 @@ public class EventInfo {
 	}
 
 	public String getPublishedString() {
-		return CommonCls.toDBDateString(mPublished);
+		return DateStrCls.toDBDateString(mPublished);
 	}
 
 	public void setUpdated(GregorianCalendar mUpdated) {
@@ -223,7 +223,7 @@ public class EventInfo {
 	 * @param date
 	 */
 	public void setUpdated(String date) {
-		this.mUpdated = CommonCls.toCalendar(date);
+		this.mUpdated = DateStrCls.toCalendar(date);
 	}
 
 	public GregorianCalendar getUpdated() {
@@ -231,7 +231,7 @@ public class EventInfo {
 	}
 
 	public String getUpdatedString() {
-		return CommonCls.toDBDateString(mUpdated);
+		return DateStrCls.toDBDateString(mUpdated);
 	}
 
 	public void setCategory(String mCategory) {
@@ -327,7 +327,7 @@ public class EventInfo {
 			// すでに存在しているデータの場合は更新処理
 			String dbUpdated = c.getString(c.getColumnIndex(UPDATED));
 			c.close();
-			GregorianCalendar cal = CommonCls.toCalendar(dbUpdated);
+			GregorianCalendar cal = DateStrCls.toCalendar(dbUpdated);
 			// 更新日時を比較する(Calendar#compareTo)
 			//  等しければ、0
 			//  Googleカレンダーの更新日時(mUpdated) が新しい場合は 1

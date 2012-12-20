@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-public class CommonCls {
+public class DateStrCls {
 	//　日付のみのフォーマット
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	// 時刻のみのフォーマット

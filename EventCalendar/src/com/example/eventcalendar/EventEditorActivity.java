@@ -77,19 +77,19 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 		if(mId==0){
 			// タップした日付で今の時刻からの予定としてデータを作成する
 			//　引数でもらった日付をカレンダーに変換
-			Calendar targetCal = CommonCls.toCalendar(mDateString);
+			Calendar targetCal = DateStrCls.toCalendar(mDateString);
 			// 今の時刻を取得
 			Calendar nowCal = new GregorianCalendar();
 			// 開始日はタップした日付
-			mStartDateTextView.setText(CommonCls.dateFormat.format(targetCal.getTime()));
+			mStartDateTextView.setText(DateStrCls.dateFormat.format(targetCal.getTime()));
 			// 開始時刻は今乃時刻
-			mStartTimeTextView.setText(CommonCls.timeFormat.format(nowCal.getTime()));
+			mStartTimeTextView.setText(DateStrCls.timeFormat.format(nowCal.getTime()));
 			// 時刻を１時間加算
 			nowCal.add(Calendar.HOUR, 1);
 			// 終了日は開始日と同じ
-			mEndDateTextView.setText(CommonCls.dateFormat.format(targetCal.getTime()));
+			mEndDateTextView.setText(DateStrCls.dateFormat.format(targetCal.getTime()));
 			//　終了時刻は開始から１時間後
-			mEndTimeTextView.setText(CommonCls.timeFormat.format(nowCal.getTime()));
+			mEndTimeTextView.setText(DateStrCls.timeFormat.format(nowCal.getTime()));
 		}else{
 			// データベースからデータを取得し、データの内容を編集エリアに設定する
 			ContentResolver contentResolver = getContentResolver();
@@ -101,13 +101,13 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 				mContentEditText.setText(c.getString(c.getColumnIndex(EventInfo.CONTENT)));
 
 				String startTime = c.getString(c.getColumnIndex(EventInfo.START_TIME));
-				Calendar startCal = CommonCls.toCalendar(startTime);
-				mStartDateTextView.setText(CommonCls.dateFormat.format(startCal.getTime()));
-				mStartTimeTextView.setText(CommonCls.timeFormat.format(startCal.getTime()));
+				Calendar startCal = DateStrCls.toCalendar(startTime);
+				mStartDateTextView.setText(DateStrCls.dateFormat.format(startCal.getTime()));
+				mStartTimeTextView.setText(DateStrCls.timeFormat.format(startCal.getTime()));
 				String endTime = c.getString(c.getColumnIndex(EventInfo.END_TIME));
-				Calendar endCal = CommonCls.toCalendar(endTime);
-				mEndDateTextView.setText(CommonCls.dateFormat.format(endCal.getTime()));
-				mEndTimeTextView.setText(CommonCls.timeFormat.format(endCal.getTime()));
+				Calendar endCal = DateStrCls.toCalendar(endTime);
+				mEndDateTextView.setText(DateStrCls.dateFormat.format(endCal.getTime()));
+				mEndTimeTextView.setText(DateStrCls.timeFormat.format(endCal.getTime()));
 				if(startCal.get(Calendar.HOUR_OF_DAY) == 0 && 
 						startCal.get(Calendar.MINUTE) == 0){
 					startCal.add(Calendar.DAY_OF_MONTH, 1);
@@ -148,23 +148,23 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			values.put(EventInfo.TITLE, mTitleEditText.getText().toString());
 			values.put(EventInfo.WHERE, mWhereEditText.getText().toString());
 			values.put(EventInfo.CONTENT, mContentEditText.getText().toString());
-			values.put(EventInfo.UPDATED,CommonCls.toDBDateString(new GregorianCalendar()));
+			values.put(EventInfo.UPDATED,DateStrCls.toDBDateString(new GregorianCalendar()));
 			values.put(EventInfo.MODIFIED, 1);
 			values.put(EventInfo.DELETED,0);
 			if(mAllDayCheckBox.isChecked()){
 				// 終日が設定されていたら　終了日は翌日、時刻はともに00:00にする
-				GregorianCalendar c = CommonCls.toCalendar(
-						CommonCls.toDBDateString(
+				GregorianCalendar c = DateStrCls.toCalendar(
+						DateStrCls.toDBDateString(
 								mStartDateTextView.getText().toString(),
 								"00:00"));
-				values.put(EventInfo.START_TIME,CommonCls.toDBDateString(c));
+				values.put(EventInfo.START_TIME,DateStrCls.toDBDateString(c));
 				c.add(Calendar.DAY_OF_MONTH, 1);
-				values.put(EventInfo.END_TIME,CommonCls.toDBDateString(c));
+				values.put(EventInfo.END_TIME,DateStrCls.toDBDateString(c));
 			}else{
-				values.put(EventInfo.START_TIME,CommonCls.toDBDateString(
+				values.put(EventInfo.START_TIME,DateStrCls.toDBDateString(
 						mStartDateTextView.getText().toString(),
 						mStartTimeTextView.getText().toString()));
-				values.put(EventInfo.END_TIME,CommonCls.toDBDateString(
+				values.put(EventInfo.END_TIME,DateStrCls.toDBDateString(
 						mEndDateTextView.getText().toString(),
 						mEndTimeTextView.getText().toString()));
 			}
@@ -208,14 +208,14 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			GregorianCalendar c = null;
 			if(v == mStartDateTextView){
 				//　開始日でクリックされた場合
-				c = CommonCls.toCalendar(
-						CommonCls.toDBDateString(
+				c = DateStrCls.toCalendar(
+						DateStrCls.toDBDateString(
 								mStartDateTextView.getText().toString(),
 								mStartTimeTextView.getText().toString()));
 			}else if(v == mEndDateTextView){
 				// 終了日でクリックされた場合
-				c = CommonCls.toCalendar(
-						CommonCls.toDBDateString(
+				c = DateStrCls.toCalendar(
+						DateStrCls.toDBDateString(
 								mEndDateTextView.getText().toString(),
 								mEndTimeTextView.getText().toString()));
 			}else{
@@ -254,9 +254,9 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			c.set(y,m,d);
 			// 引数で渡された年月日を該当するViewにセットする
 			if(mView == mStartDateTextView){
-				mStartDateTextView.setText(CommonCls.dateFormat.format(c.getTime()));
+				mStartDateTextView.setText(DateStrCls.dateFormat.format(c.getTime()));
 			}else if(mView == mEndDateTextView){
-				mEndDateTextView.setText(CommonCls.dateFormat.format(c.getTime()));
+				mEndDateTextView.setText(DateStrCls.dateFormat.format(c.getTime()));
 			}
 		}
 	}
@@ -280,14 +280,14 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			GregorianCalendar c = null;
 			if(v == mStartTimeTextView){
 				//　開始時刻でクリックされた場合
-				c = CommonCls.toCalendar(
-						CommonCls.toDBDateString(
+				c = DateStrCls.toCalendar(
+						DateStrCls.toDBDateString(
 								mStartDateTextView.getText().toString(),
 								mStartTimeTextView.getText().toString()));
 			}else if(v == mEndTimeTextView){
 				//　終了時刻でクリックされた場合
-				c = CommonCls.toCalendar(
-						CommonCls.toDBDateString(
+				c = DateStrCls.toCalendar(
+						DateStrCls.toDBDateString(
 								mEndDateTextView.getText().toString(),
 								mEndTimeTextView.getText().toString()));
 			}else{
@@ -327,9 +327,9 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			c.set(Calendar.MINUTE,m);
 			// 引数で渡された年月日を該当するViewにセットする
 			if(mView == mStartTimeTextView){
-				mStartTimeTextView.setText(CommonCls.timeFormat.format(c.getTime()));
+				mStartTimeTextView.setText(DateStrCls.timeFormat.format(c.getTime()));
 			}else if(mView == mEndTimeTextView){
-				mEndTimeTextView.setText(CommonCls.timeFormat.format(c.getTime()));
+				mEndTimeTextView.setText(DateStrCls.timeFormat.format(c.getTime()));
 			}
 		}
 	}

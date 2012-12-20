@@ -135,7 +135,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 				cal.set(Calendar.DAY_OF_MONTH, 1);
 				cal.add(Calendar.DAY_OF_MONTH, position-cal.get(Calendar.DAY_OF_WEEK)+1);
 				// 日付文字列を生成
-				String dateString = CommonCls.dateFormat.format(cal.getTime());
+				String dateString = DateStrCls.dateFormat.format(cal.getTime());
 				// Intent  を作成
 				Intent intent = new Intent(EventCalendarActivity.this,EventDetailActivity.class);
 				// 日付をExtraにセット
@@ -291,7 +291,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 	 */
 	public void syncCalendar(){
 		// 更新開始時刻を保存
-		mUpdateStartTime = CommonCls.toUTCString(new GregorianCalendar());
+		mUpdateStartTime = DateStrCls.toUTCString(new GregorianCalendar());
 		// プリファレンス確認のためにsharedPreferencesを取得
 		SharedPreferences sharedPreferences  = getSharedPreferences(AUTH_INFO, MODE_PRIVATE);
 		// 第二引数はデフォルト値：指定した名前のデータが無かったときに返ってくる値
@@ -620,7 +620,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 			String[] projection = {EventInfo.TITLE};
 			// 削除フラグのついているデータは検索しない
 			String selection = EventInfo.DELETED + " = 0 and " + EventInfo.START_TIME+" LIKE ?";
-			String[] selectionArgs = {CommonCls.dateFormat.format(cal.getTime())+"%"};
+			String[] selectionArgs = {DateStrCls.dateFormat.format(cal.getTime())+"%"};
 			String sortOrder = EventInfo.START_TIME;
 			// Queryの実行
 			Cursor c = mContentResolver.query(RESOLVER_URI,projection,selection,selectionArgs,sortOrder);
