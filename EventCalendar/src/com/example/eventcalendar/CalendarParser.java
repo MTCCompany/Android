@@ -14,14 +14,14 @@ import android.content.ContentResolver;
 import android.util.Xml;
 
 public class CalendarParser {
-	// NameSpace‚Ì’è‹`
+	// NameSpaceã®å®šç¾©
 	public static final String NS_GD = "gd";
 	public static final String NS_APP = "app";
 	public static final String NS_XMLNS = "xmlns";
 	public static final String NS_GCAL = "gCal";
 	public static final String NS_OPEN_SEARCH = "openSearch";
 
-	//feed‚Åg—p‚³‚ê‚éTAG‚Ì’è‹`
+	//feedã§ä½¿ç”¨ã•ã‚Œã‚‹TAGã®å®šç¾©
 	public static final String TAG_FEED = "feed";
 	public static final String TAG_AUTHOR = "author";
 	public static final String TAG_NAME = "name";
@@ -32,7 +32,7 @@ public class CalendarParser {
 	public static final String TAG_TIMEZONE = "timezone";
 	public static final String TAG_TIME_CLEANED = "timeCleaned";
 
-	//entry‚Åg—p‚³‚ê‚éTAG‚Ì’è‹`
+	//entryã§ä½¿ç”¨ã•ã‚Œã‚‹TAGã®å®šç¾©
 	public static final String TAG_ENTRY = "entry";
 	public static final String TAG_TEXT = "#text";
 	public static final String TAG_ID = "id";
@@ -59,7 +59,7 @@ public class CalendarParser {
 	public static final String TAG_UID = "uid";
 	public static final String TAG_RECURRENCE = "recurrence";
 
-	//NameSpace•t‚«TAG‚Ì’è‹`
+	//NameSpaceä»˜ãTAGã®å®šç¾©
 	public static final String TAG_GD_WHERE = NS_GD+":"+TAG_WHERE;
 	public static final String TAG_GD_WHO = NS_GD+":"+TAG_WHO;
 	public static final String TAG_GD_WHEN = NS_GD+":"+TAG_WHEN;
@@ -82,7 +82,7 @@ public class CalendarParser {
 	public static final String TAG_GCAL_UID = NS_GCAL+":"+TAG_UID;
 	public static final String TAG_GD_RECURRENCE = NS_GD+":"+TAG_RECURRENCE;
 
-	// ƒAƒgƒŠƒrƒ…[ƒg–¼‚Ì’è‹`    
+	// ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆåã®å®šç¾©    
 	public static final String ATT_XMLNS = "xmlns";
 	public static final String ATT_KIND = "kind";
 	public static final String ATT_TERM = "term";
@@ -100,12 +100,12 @@ public class CalendarParser {
 	public static final String ATT_MINUTES = "minutes";
 	public static final String ATT_TYPE = "type";
 
-	//NameSpace•t‚«ƒAƒgƒŠƒrƒ…[ƒg–¼‚Ì’è‹`
+	//NameSpaceä»˜ãã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆåã®å®šç¾©
 	public static final String ATT_GD_ETAG = NS_GD+":"+ATT_ETAG;
 	public static final String ATT_GD_KIND = NS_GD+":"+ATT_KIND;
 	public static final String ATT_GD_FEED_LINK = NS_GD+":"+ATT_FEED_LINK;
 
-	//Value–¼‚Ì’è‹`
+	//Valueåã®å®šç¾©
 	public static final String VAL_NEXT = "next";
 	public static final String VAL_EDIT = "edit";
 	public static final String VAL_SELF = "self";
@@ -115,17 +115,17 @@ public class CalendarParser {
 	private ContentResolver mContentResolver = null;
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	 */
 	public CalendarParser(ContentResolver resolver){
 		mContentResolver = resolver;
 	}
 
 	/**
-	 * ƒp[ƒT–{‘Ì
+	 * ãƒ‘ãƒ¼ã‚µæœ¬ä½“
 	 *
-	 * @param InputStream XMLƒtƒ@ƒCƒ‹‚ğ‚Á‚Ä‚¢‚éInputStream
-	 * @return feedƒ^ƒO‚ÉŠÜ‚Ü‚ê‚éNextURL ÅŒã‚Ìfeed‚Ìê‡‚Ínull
+	 * @param InputStream XMLãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒã£ã¦ã„ã‚‹InputStream
+	 * @return feedã‚¿ã‚°ã«å«ã¾ã‚Œã‚‹NextURL æœ€å¾Œã®feedã®å ´åˆã¯null
 	 */
 	public String parse(InputStream is){
 		if(is==null){
@@ -136,64 +136,64 @@ public class CalendarParser {
 		String parent = null;
 		EventInfo eventInfo = null;
 
-		// TAG‚ÌŠK‘w‚ğ•Û‚µ‚Ä‚¨‚­‚½‚ß‚ÌStack‚Ì’è‹`
+		// TAGã®éšå±¤ã‚’ä¿æŒã—ã¦ãŠããŸã‚ã®Stackã®å®šç¾©
 		Stack<String> tagStack = new Stack<String>();
 		try {
-			// V‚µ‚¢PullParser‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚µˆ—‚ÌŠJn‚Ì€”õ
+			// æ–°ã—ã„PullParserã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã—å‡¦ç†ã®é–‹å§‹ã®æº–å‚™
 			XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
 			parser.setInput(is,null);
-			// Œ»İ‚ÌEventType‚Ìæ“¾
+			// ç¾åœ¨ã®EventTypeã®å–å¾—
 			int eventType = parser.getEventType();
 			while(eventType != XmlPullParser.END_DOCUMENT){
 				switch(eventType){
-				// START_DOCUMENT‚Ìˆ—
+				// START_DOCUMENTã®å‡¦ç†
 				case XmlPullParser.START_DOCUMENT:
 					break;
-					// START_TAG‚Ìˆ—
+					// START_TAGã®å‡¦ç†
 				case XmlPullParser.START_TAG:
-					// Œ»İ‚ÌTAG‚ğæ“¾
+					// ç¾åœ¨ã®TAGã‚’å–å¾—
 					tagName = parser.getName();
 					if(tagStack.empty() == false){
-						// TAGƒXƒ^ƒbƒN‚©‚çˆê‚ÂãˆÊ‚ÌTAG‚ğæ“¾
+						// TAGã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰ä¸€ã¤ä¸Šä½ã®TAGã‚’å–å¾—
 						parent = tagStack.peek();
 					}
-					// Œ»İ‚ÌTAG‚ğStack‚ÉPush
+					// ç¾åœ¨ã®TAGã‚’Stackã«Push
 					tagStack.push(tagName);
 					if(tagName.equalsIgnoreCase(TAG_ENTRY)){
-						// entryƒ^ƒO‚Ìˆ—
-						// V‚µ‚¢EventInfo‚ğì¬
+						// entryã‚¿ã‚°ã®å‡¦ç†
+						// æ–°ã—ã„EventInfoã‚’ä½œæˆ
 						eventInfo = new EventInfo(mContentResolver);
-						// entry tag‚ÌƒAƒgƒŠƒrƒ…[ƒg‚Ìˆ—
+						// entry tagã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã®å‡¦ç†
 						for(int i=0;i< parser.getAttributeCount();i++){
 							if(parser.getAttributeName(i).equalsIgnoreCase(ATT_GD_ETAG)){
 								eventInfo.setEtag(parser.getAttributeValue(i));
 							}
 						}
 					}else if(tagName.equalsIgnoreCase(TAG_LINK)){
-						// linkƒ^ƒO‚Ìˆ—
+						// linkã‚¿ã‚°ã®å‡¦ç†
 						if(parent.equalsIgnoreCase(TAG_ENTRY)){
 							if(parser.getAttributeCount()>0){
 								if(parser.getAttributeName(0).equalsIgnoreCase(ATT_REL) 
 										&& parser.getAttributeValue(0).equalsIgnoreCase(VAL_EDIT)
 										&& parser.getAttributeName(2).equalsIgnoreCase(ATT_HREF)){
-									// Å‰‚ÌƒAƒgƒŠƒrƒ…[ƒg–¼‚ªrel‚Å’l‚ªedit@‚©‚Â@3”Ô–Ú‚Ìat—ƒrƒ…[‚Æ–¼‚ªhref‚Å‚ ‚éê‡
-									// editURL‚È‚Ì‚ÅEventInfo‚É‹L˜^‚·‚é
+									// æœ€åˆã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆåãŒrelã§å€¤ãŒeditã€€ã‹ã¤ã€€3ç•ªç›®ã®atç†ãƒ“ãƒ¥ãƒ¼ã¨åãŒhrefã§ã‚ã‚‹å ´åˆ
+									// editURLãªã®ã§EventInfoã«è¨˜éŒ²ã™ã‚‹
 									eventInfo.setEditUrl(parser.getAttributeValue(2));
 								}
 							}
 						}else if(parent.equalsIgnoreCase(TAG_FEED)){
-							// feedƒ^ƒO‚Ìˆ—
+							// feedã‚¿ã‚°ã®å‡¦ç†
 							if(parser.getAttributeCount()>0){
 								if(parser.getAttributeName(0).equalsIgnoreCase(ATT_REL) 
 										&& parser.getAttributeValue(0).equalsIgnoreCase(VAL_NEXT)){
-									// Å‰‚ÌƒAƒgƒŠƒrƒ…[ƒg–¼‚ªrel‚Å’l‚ªnext‚È‚ç‚ÎA‘±‚«‚Ìfeed‚ğæ“¾‚·‚é‚½‚ß‚ÌURL‚È‚Ì‚Å
-									// nextUrl‚Æ‚µ‚Ä•Û‘¶
+									// æœ€åˆã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆåãŒrelã§å€¤ãŒnextãªã‚‰ã°ã€ç¶šãã®feedã‚’å–å¾—ã™ã‚‹ãŸã‚ã®URLãªã®ã§
+									// nextUrlã¨ã—ã¦ä¿å­˜
 									nextUrl = parser.getAttributeValue(2);
 								}
 							}
 						}
 					}else if(tagName.equalsIgnoreCase(TAG_CATEGORY)){
-						// categoryƒ^ƒO‚Ìˆ—
+						// categoryã‚¿ã‚°ã®å‡¦ç†
 						if(parent.equalsIgnoreCase(TAG_ENTRY)){
 							for(int i=0;i<parser.getAttributeCount();i++){
 								if(parser.getAttributeName(i).equalsIgnoreCase(ATT_TERM)){
@@ -202,18 +202,18 @@ public class CalendarParser {
 							}
 						}
 					}else if(tagName.equalsIgnoreCase(TAG_GD_WHERE)){
-						// gd_whereƒ^ƒO‚Ìˆ—
+						// gd_whereã‚¿ã‚°ã®å‡¦ç†
 						if(parser.getAttributeCount()>0){
 							eventInfo.setWhere(parser.getAttributeValue(0));
 						}
 					}else if(tagName.equalsIgnoreCase(TAG_GD_WHEN)){
-						// gd_whenƒ^ƒO‚Ìˆ—
+						// gd_whenã‚¿ã‚°ã®å‡¦ç†
 						for(int i=0;i<parser.getAttributeCount();i++){
 							if(parser.getAttributeName(i).equalsIgnoreCase(ATT_ENDTIME)){
-								// ƒAƒgƒŠƒrƒ…[ƒg–¼‚ªgd_when_endtime‚Ìê‡AƒCƒxƒ“ƒg‚ÌI—¹
+								// ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆåãŒgd_when_endtimeã®å ´åˆã€ã‚¤ãƒ™ãƒ³ãƒˆã®çµ‚äº†æ™‚åˆ»
 								eventInfo.setEnd(parser.getAttributeValue(i));
 							}else if(parser.getAttributeName(i).equalsIgnoreCase(ATT_STARTTIME)){
-								// ƒAƒgƒŠƒrƒ…[ƒg–¼‚ªgd_when_starttime‚Ìê‡AƒCƒxƒ“ƒg‚ÌŠJn
+								// ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆåãŒgd_when_starttimeã®å ´åˆã€ã‚¤ãƒ™ãƒ³ãƒˆã®é–‹å§‹æ™‚åˆ»
 								eventInfo.setStart(parser.getAttributeValue(i));
 							}
 						}
@@ -222,49 +222,49 @@ public class CalendarParser {
 							eventInfo.addToAlarmMap(parser.getAttributeValue(0),parser.getAttributeValue(1));
 						}
 					}else if(tagName.equalsIgnoreCase(TAG_GD_EVENT_STATUS)){
-						// event_statusƒ^ƒO‚Ìˆ—
+						// event_statusã‚¿ã‚°ã®å‡¦ç†
 						if(parser.getAttributeCount()>0){
 							eventInfo.setEventStatus(parser.getAttributeValue(0));
 						}
 					}
 					break;
 				case XmlPullParser.TEXT:
-					//TAG‚ÌCONTET•”•ª‚Ìˆ—
+					//TAGã®CONTETéƒ¨åˆ†ã®å‡¦ç†
 					if(eventInfo != null){
 						if(tagName.equalsIgnoreCase(TAG_PUBLISHED)){
-							// publishedƒ^ƒO‚Ìˆ—
+							// publishedã‚¿ã‚°ã®å‡¦ç†
 							eventInfo.setPublished(parser.getText());
 						}else if(tagName.equalsIgnoreCase(TAG_UPDATED)){
-							// updatedƒ^ƒO‚Ìˆ—
+							// updatedã‚¿ã‚°ã®å‡¦ç†
 							eventInfo.setUpdated(parser.getText());
 						}else if(tagName.equalsIgnoreCase(TAG_TITLE)){
-							// titleƒ^ƒO‚Ìˆ—
+							// titleã‚¿ã‚°ã®å‡¦ç†
 							eventInfo.setTitle(parser.getText());
 						}else if(tagName.equalsIgnoreCase(TAG_CONTENT)){
-							// contentƒ^ƒO‚Ìˆ—
+							// contentã‚¿ã‚°ã®å‡¦ç†
 							eventInfo.setContent(parser.getText());
 						}else if(tagName.equalsIgnoreCase(TAG_ID)){
-							// idƒ^ƒO‚Ìˆ—
+							// idã‚¿ã‚°ã®å‡¦ç†
 							eventInfo.setEventId(parser.getText());
 						}else if(tagName.equalsIgnoreCase(TAG_GD_RECURRENCE)){
-							// recurrenceƒ^ƒO‚Ìˆ—
+							// recurrenceã‚¿ã‚°ã®å‡¦ç†
 							eventInfo.setRecurrence(parser.getText());
 						}
 					}
 					break;
 				case XmlPullParser.END_TAG:
-					// ƒ^ƒOƒNƒ[ƒY‚Ìˆ—
+					// ã‚¿ã‚°ã‚¯ãƒ­ãƒ¼ã‚ºã®å‡¦ç†
 					tagName = parser.getName();
-					// TAG Stack ‚©‚çPOP
+					// TAG Stack ã‹ã‚‰POP
 					tagStack.pop();
 					if(tagName.equalsIgnoreCase(TAG_ENTRY)){
-						// entryƒ^ƒO‚ÌI—¹‚Ìê‡‚ÍA‚±‚ê‚Ü‚Å‚É‹L˜^‚µ‚½EventInfo‚ğƒf[ƒ^ƒx[ƒX‚É•Û‘¶
+						// entryã‚¿ã‚°ã®çµ‚äº†ã®å ´åˆã¯ã€ã“ã‚Œã¾ã§ã«è¨˜éŒ²ã—ãŸEventInfoã‚’ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ä¿å­˜
 						eventInfo.updateDB();
 						eventInfo = null;
 					}
 					break;
 				}
-				// Ÿ‚Ìevent‚ÉˆÚ“®
+				// æ¬¡ã®eventã«ç§»å‹•
 				eventType = parser.next();
 			}
 		} catch (XmlPullParserException e) {
@@ -273,7 +273,7 @@ public class CalendarParser {
 		return nextUrl;
 	}
 	/**
-	 * EventInfo‚Ìî•ñ‚ğŒ³‚Éinsert—p‚ÌXML‚ğì¬‚·‚éB
+	 * EventInfoã®æƒ…å ±ã‚’å…ƒã«insertç”¨ã®XMLã‚’ä½œæˆã™ã‚‹ã€‚
 	 *
 	 * @param EventInfo
 	 * @return String XML
@@ -282,9 +282,9 @@ public class CalendarParser {
 		XmlSerializer serializer = Xml.newSerializer();
 		StringWriter writer = new StringWriter();
 		try {
-			// o—Í‚ğİ’è
+			// å‡ºåŠ›ã‚’è¨­å®š
 			serializer.setOutput(writer);
-			// XML Document‚ğŠJn
+			// XML Documentã‚’é–‹å§‹
 			serializer.startDocument("UTF-8",false);
 			serializer.startTag("", TAG_ENTRY);
 			serializer.attribute("", NS_XMLNS, "http://www.w3.org/2005/Atom");
@@ -315,9 +315,9 @@ public class CalendarParser {
 			serializer.attribute("", ATT_STARTTIME, e.getStartString());
 			serializer.endTag("", TAG_GD_WHEN);
 			serializer.endTag("", TAG_ENTRY);
-			// Document‚ğI—¹
+			// Documentã‚’çµ‚äº†
 			serializer.endDocument();
-			// Œ‹‰Ê‚ÌXML‚ğString‚Å•Ô‚·
+			// çµæœã®XMLã‚’Stringã§è¿”ã™
 			return writer.toString();
 		} catch (Exception ex) {
 		}
@@ -325,20 +325,20 @@ public class CalendarParser {
 	}
 
 	/**
-	 * XV—p‚ÌXML‚ğ¶¬‚·‚é
+	 * æ›´æ–°ç”¨ã®XMLã‚’ç”Ÿæˆã™ã‚‹
 	 *
-	 * @param InputStream XVŒ³‚ÌXML‚ğ“Ç‚İo‚·InputStream
-	 * @param EventInfo XV‚·‚×‚«“à—e‚ğ‚Á‚½EventInfo
-	 * @return String “à—e‚ğ‘‚«Š·‚¦‚½XML
+	 * @param InputStream æ›´æ–°å…ƒã®XMLã‚’èª­ã¿å‡ºã™InputStream
+	 * @param EventInfo æ›´æ–°ã™ã¹ãå†…å®¹ã‚’æŒã£ãŸEventInfo
+	 * @return String å†…å®¹ã‚’æ›¸ãæ›ãˆãŸXML
 	 */
 	public String updateSerializer(InputStream is,EventInfo eventInfo){
-		// XMLì¬—p‚ÌSerializer
+		// XMLä½œæˆç”¨ã®Serializer
 		XmlSerializer serializer = Xml.newSerializer();
 		StringWriter writer = new StringWriter();
-		// XVŒ³‚ğ‰ğß‚·‚éƒp[ƒT[
+		// æ›´æ–°å…ƒã‚’è§£é‡ˆã™ã‚‹ãƒ‘ãƒ¼ã‚µãƒ¼
 		XmlPullParser parser;
 		try {
-			// ‰Šú‰»
+			// åˆæœŸåŒ–
 			parser = XmlPullParserFactory.newInstance().newPullParser();
 			parser.setInput(is,null);
 			serializer.setOutput(writer);
@@ -349,12 +349,12 @@ public class CalendarParser {
 			while(eventType != XmlPullParser.END_DOCUMENT){
 				switch(eventType){
 				case XmlPullParser.START_DOCUMENT:
-					// DocumentŠJn
+					// Documenté–‹å§‹
 					serializer.startDocument("UTF-8",false);
 					break;
 				case XmlPullParser.START_TAG:
 					tagName = parser.getName();
-					// TAGŠJn
+					// TAGé–‹å§‹
 					serializer.startTag("", tagName);
 					tagStack.push(tagName);
 					if(tagName.equalsIgnoreCase(TAG_ENTRY)){
@@ -384,8 +384,8 @@ public class CalendarParser {
 					}
 					break;
 				case XmlPullParser.TEXT:
-					// TEXT‚Å‚ÍAEventInfo‚É’l‚ğ‚Á‚Ä‚¢‚é‚à‚Ì‚É‚Â‚¢‚Ä‚Íˆ—‚µ‚È‚¢
-					// END_TAG‚ÌŠ‚ÅTEXT‚Ìo—Íˆ—‚ğs‚¤B
+					// TEXTã§ã¯ã€EventInfoã«å€¤ã‚’æŒã£ã¦ã„ã‚‹ã‚‚ã®ã«ã¤ã„ã¦ã¯å‡¦ç†ã—ãªã„
+					// END_TAGã®æ‰€ã§TEXTã®å‡ºåŠ›å‡¦ç†ã‚’è¡Œã†ã€‚
 					if(tagName.equalsIgnoreCase(TAG_ID)){
 					}else if(tagName.equalsIgnoreCase(TAG_PUBLISHED)){
 					}else if(tagName.equalsIgnoreCase(TAG_UPDATED)){
@@ -396,9 +396,9 @@ public class CalendarParser {
 					}
 					break;
 				case XmlPullParser.END_TAG:
-					// END_TAGˆ—
+					// END_TAGå‡¦ç†
 					tagName = parser.getName();
-					// EventInfo‚Å’l‚ğ‚Á‚Ä‚¢‚éê‡‚Í‚±‚±‚Åtexto—Í‚ğs‚¤
+					// EventInfoã§å€¤ã‚’æŒã£ã¦ã„ã‚‹å ´åˆã¯ã“ã“ã§textå‡ºåŠ›ã‚’è¡Œã†
 					if(tagName.equalsIgnoreCase(TAG_ID)){
 						serializer.text(eventInfo.getEventId());
 					}else if(tagName.equalsIgnoreCase(TAG_PUBLISHED)){

@@ -15,11 +15,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 
 public class CalendarHttpClient {
-	// HTTPˆ—‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©‚ğ•Û‚·‚éƒƒ“ƒo•Ï”
-	public boolean mHttpSucceeded = false;
+	// HTTPå‡¦ç†ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹ã‚’ä¿æŒã™ã‚‹ãƒ¡ãƒ³ãƒå¤‰æ•°
+	private boolean mHttpSucceeded = false;
 	
 	/**
-	 * Http Deleteˆ—
+	 * Http Deleteå‡¦ç†
 	 * @param String URL
 	 */
 	public void httpDelete(String url){
@@ -27,70 +27,70 @@ public class CalendarHttpClient {
 	}
 
 	/**
-	 * Http Postˆ—
+	 * Http Postå‡¦ç†
 	 *
 	 * @param String URL
 	 * @param String XML
-	 * @return InputStream ˆ—Œ‹‰Ê‚ÌXML‚ğ•Ô‚·InputStream
+	 * @return InputStream å‡¦ç†çµæœã®XMLã‚’è¿”ã™InputStream
 	 */
 	public InputStream httpPost(String url,String xml){
 		return httpPostXmlWithMethod(url,xml,null);
 	}
 
 	/**
-	 * Http Putˆ—
+	 * Http Putå‡¦ç†
 	 *
 	 * @param String URL
 	 * @param String XML
-	 * @return InputStream ˆ—Œ‹‰Ê‚ÌXML‚ğ•Ô‚·InputStream
+	 * @return InputStream å‡¦ç†çµæœã®XMLã‚’è¿”ã™InputStream
 	 */
 	public InputStream httpPut(String url,String xml){
 		return httpPostXmlWithMethod(url,xml,"PUT");
 	}
 
 	/**
-	 * XMLƒtƒ@ƒCƒ‹‚ğ“K“–‚Èƒƒ\ƒbƒh‚Å‘—M‚·‚éB
+	 * XMLãƒ•ã‚¡ã‚¤ãƒ«ã‚’é©å½“ãªãƒ¡ã‚½ãƒƒãƒ‰ã§é€ä¿¡ã™ã‚‹ã€‚
 	 * 
 	 * @param String URL
 	 * @param String XML
-	 * @param String ƒƒ\ƒbƒh(PUT,DELETE)
-	 * @return InputStream ˆ—Œ‹‰Ê‚ğ•Ô‚·InputStream
+	 * @param String ãƒ¡ã‚½ãƒƒãƒ‰(PUT,DELETE)
+	 * @return InputStream å‡¦ç†çµæœã‚’è¿”ã™InputStream
 	 */
 	public InputStream httpPostXmlWithMethod(String url,String xml,String method){
 		mHttpSucceeded = false;
 		try {
 			while(url != null){
 				URL u = new URL(url);
-				// URL‚ğw’è‚µ‚ÄƒRƒlƒNƒVƒ‡ƒ“‚ğŠJ‚­
+				// URLã‚’æŒ‡å®šã—ã¦ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’é–‹ã
 				HttpURLConnection httpConnection = (HttpURLConnection)u.openConnection();
-				// ƒƒ\ƒbƒh‚ÍPOST‚ğg—p‚·‚éB
+				// ãƒ¡ã‚½ãƒƒãƒ‰ã¯POSTã‚’ä½¿ç”¨ã™ã‚‹ã€‚
 				httpConnection.setRequestMethod("POST");
-				// GData-Version‚Í‚Q‚ğw’è‚·‚é
+				// GData-Versionã¯ï¼’ã‚’æŒ‡å®šã™ã‚‹
 				httpConnection.setRequestProperty("GData-Version","2");
 				if(method != null){
-					// POSTˆÈŠO‚Ìƒƒ\ƒbƒh‚ğw’è‚³‚ê‚½‚ÍAƒwƒbƒ_‚ÉIf-Match:*‚ÆX-HTTP-Method-Override‚ğw’è
+					// POSTä»¥å¤–ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’æŒ‡å®šã•ã‚ŒãŸæ™‚ã¯ã€ãƒ˜ãƒƒãƒ€ã«If-Match:*ã¨X-HTTP-Method-Overrideã‚’æŒ‡å®š
 					httpConnection.setRequestProperty("If-Match","*");
 					httpConnection.setRequestProperty("X-HTTP-Method-Override",method);
 				}
-				// ƒRƒ“ƒeƒ“ƒc‚ğo—Í‚·‚éİ’è
+				// ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ã‚’å‡ºåŠ›ã™ã‚‹è¨­å®š
 				httpConnection.setDoOutput(true);
-				// Content-Type‚Í@XMLƒtƒ@ƒCƒ‹
+				// Content-Typeã¯ã€€XMLãƒ•ã‚¡ã‚¤ãƒ«
 				httpConnection.setRequestProperty("Content-Type", "application/atom+xml");
-				// OutputStreamWriter‚Éˆø”‚ÌXML‚ğİ’è‚µ‚Äo—Í
+				// OutputStreamWriterã«å¼•æ•°ã®XMLã‚’è¨­å®šã—ã¦å‡ºåŠ›
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpConnection.getOutputStream(),"UTF-8");
 				outputStreamWriter.write(xml);
 				outputStreamWriter.close();
-				// HTTPƒŒƒXƒ|ƒ“ƒXƒR[ƒh‚ğæ“¾
+				// HTTPãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’å–å¾—
 				int responseCode = httpConnection.getResponseCode();
 				url = null;
 				if(responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED){
-					// ƒŒƒXƒ|ƒ“ƒXƒR[ƒh‚ªOK‚Ü‚½‚ÍCREATED‚Ìê‡‚Íˆ—‚ªŠ®—¹
+					// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚³ãƒ¼ãƒ‰ãŒOKã¾ãŸã¯CREATEDã®å ´åˆã¯å‡¦ç†ãŒå®Œäº†
 					mHttpSucceeded = true;
-					// “ü—Í‚ÌInputStream‚ğ•Ô‚µ‚ÄI—¹
+					// å…¥åŠ›ã®InputStreamã‚’è¿”ã—ã¦çµ‚äº†
 					return httpConnection.getInputStream();
 				}else if(responseCode == HttpURLConnection.HTTP_MOVED_TEMP){
-					// ƒŒƒXƒ|ƒ“ƒXƒR[ƒh‚ªMOVED_TEMP‚¾‚Á‚½ê‡AƒŠƒ_ƒCƒŒƒNƒg‚È‚Ì‚ÅA
-					// ƒwƒbƒ_‚©‚çLocationƒwƒbƒ_‚ğæ‚èo‚µ‚ÄAURL‚Éw’è‚µ‚ÄÄÀs(æ“ª‚Ìwhile‚É–ß‚éj
+					// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚³ãƒ¼ãƒ‰ãŒMOVED_TEMPã ã£ãŸå ´åˆã€ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆãªã®ã§ã€
+					// ãƒ˜ãƒƒãƒ€ã‹ã‚‰Locationãƒ˜ãƒƒãƒ€ã‚’å–ã‚Šå‡ºã—ã¦ã€URLã«æŒ‡å®šã—ã¦å†å®Ÿè¡Œ(å…ˆé ­ã®whileã«æˆ»ã‚‹ï¼‰
 					Map<String,List<String>> responseHeaders = httpConnection.getHeaderFields();
 					if(responseHeaders.containsKey("Location")){
 						url = responseHeaders.get("Location").get(0);
@@ -105,22 +105,22 @@ public class CalendarHttpClient {
 	}
 	
 	/**
-	 * URL‚ğ“n‚µ‚Äƒf[ƒ^‚ğInputStream‚Å•Ô‚·
-	 * @param String ƒAƒNƒZƒX‚·‚éURL
-	 * *return InputStream ƒT[ƒo‚©‚çóM‚µ‚½ƒf[ƒ^‚ÉƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌInputStream
+	 * URLã‚’æ¸¡ã—ã¦ãƒ‡ãƒ¼ã‚¿ã‚’InputStreamã§è¿”ã™
+	 * @param String ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹URL
+	 * *return InputStream ã‚µãƒ¼ãƒã‹ã‚‰å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®InputStream
 	 */
 	public InputStream httpGet(String url){
 		HttpGet httpGet = new HttpGet(url);
 		HttpClient httpClient = new DefaultHttpClient();
-		// GData Version 2—p‚ÌHeader‚ğƒZƒbƒg
+		// GData Version 2ç”¨ã®Headerã‚’ã‚»ãƒƒãƒˆ
 		httpGet.setHeader("GData-Version","2");
 		HttpResponse response;
 		try {
-			// HTTPƒAƒNƒZƒX‚ğÀs‚·‚é
+			// HTTPã‚¢ã‚¯ã‚»ã‚¹ã‚’å®Ÿè¡Œã™ã‚‹
 			response = httpClient.execute(httpGet);
 			int statusCode = response.getStatusLine().getStatusCode();
 			if(statusCode == HttpStatus.SC_OK){
-				// ƒAƒNƒZƒX‚É¬Œ÷‚µ‚½‚çresponse‚©‚çInputStream‚ğæ“¾‚·‚é
+				// ã‚¢ã‚¯ã‚»ã‚¹ã«æˆåŠŸã—ãŸã‚‰responseã‹ã‚‰InputStreamã‚’å–å¾—ã™ã‚‹
 				return response.getEntity().getContent();
 			}else if(statusCode == HttpStatus.SC_UNAUTHORIZED){
 				return null;

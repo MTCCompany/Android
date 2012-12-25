@@ -6,97 +6,97 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class DateStrCls {
-	//@“ú•t‚Ì‚İ‚ÌƒtƒH[ƒ}ƒbƒg
+	//ã€€æ—¥ä»˜ã®ã¿ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	// ‚Ì‚İ‚ÌƒtƒH[ƒ}ƒbƒg
+	// æ™‚åˆ»ã®ã¿ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	public static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-	// RFC822‚É]‚Á‚½ƒ~ƒŠ•b’PˆÊ‚ÌƒtƒH[ƒ}ƒbƒg
+	// RFC822ã«å¾“ã£ãŸãƒŸãƒªç§’å˜ä½ã®æ™‚åˆ»ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	public static SimpleDateFormat RFC822MilliDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-	// UTCiƒ^ƒCƒ€ƒ][ƒ“–³‚µj‚ÌƒtƒH[ƒ}ƒbƒg
+	// UTCæ™‚åˆ»ï¼ˆã‚¿ã‚¤ãƒ ã‚¾ãƒ¼ãƒ³ç„¡ã—ï¼‰ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	public static SimpleDateFormat UTCDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	// ˆêŠÔ‚Ì•ª”
+	// ä¸€æ™‚é–“ã®åˆ†æ•°
 	public final static int HOUR_BY_MINUTES = 60;
-	// ˆê•ª‚Ì•b”
+	// ä¸€åˆ†ã®ç§’æ•°
 	public final static int MINUTE_BY_SECONDS = 60;
-	//@1•b‚Ìƒ~ƒŠ•b”
+	//ã€€1ç§’ã®ãƒŸãƒªç§’æ•°
 	public final static int SECOND_BY_MILLI = 1000;
-	// 1•ª‚Ìƒ~ƒŠ•b”
+	// 1åˆ†ã®ãƒŸãƒªç§’æ•°
 	public final static int MINUTE_BY_MILLI = MINUTE_BY_SECONDS*SECOND_BY_MILLI;
 	
 	
 	/**
-	 * “ú•tA‚Ì•¶š—ñ‚©‚çDB ‚É•Û‘¶‚·‚é‚½‚ß‚Ì•¶š—ñ‚É•ÏŠ·‚·‚é
-	 * @param date@•ÏŠ·Œ³‚Ì“ú•t
-	 * @param time@•ÏŠ·‚à‚Æ‚Ì
-	 * @return@RFC 3339Œ`®‚Ì“ú•¶š—ñ
+	 * æ—¥ä»˜ã€æ™‚åˆ»ã®æ–‡å­—åˆ—ã‹ã‚‰DB ã«ä¿å­˜ã™ã‚‹ãŸã‚ã®æ™‚åˆ»æ–‡å­—åˆ—ã«å¤‰æ›ã™ã‚‹
+	 * @param dateã€€å¤‰æ›å…ƒã®æ—¥ä»˜
+	 * @param timeã€€å¤‰æ›ã‚‚ã¨ã®æ™‚åˆ»
+	 * @returnã€€RFC 3339å½¢å¼ã®æ—¥æ™‚æ–‡å­—åˆ—
 	 */
 	public static String toDBDateString(String date,String time){
-		// ’Ç‰Á‰Â”\‚È•¶š—ñƒNƒ‰ƒXStringBuilder‚ğì¬
+		// è¿½åŠ å¯èƒ½ãªæ–‡å­—åˆ—ã‚¯ãƒ©ã‚¹StringBuilderã‚’ä½œæˆ
 		StringBuilder sb = new StringBuilder();
 		sb.append(date);
 		sb.append("T");
 		sb.append(time);
 		sb.append(":00.000");
-		// TimeZone•¶š—ñ‚ğì¬‚µ’Ç‰Á
+		// TimeZoneæ–‡å­—åˆ—ã‚’ä½œæˆã—è¿½åŠ 
 		sb.append(timeZoneToString(TimeZone.getDefault()));
 		return sb.toString();
 	}
 
 	/**
-	 * ƒ^ƒCƒ€ƒ][ƒ“‚Ì•¶š—ñ‚ğ¶¬‚·‚é
-	 *  RFC 3339‚Åg—p‚·‚é‚½‚ßA•ª‚Ì‹æØ‚è‚ÉF‚ğ“ü‚ê‚é
-	 * @param tz ƒ^ƒCƒ€ƒ][ƒ“
-	 * @return ƒ^ƒCƒ€ƒ][ƒ“•¶š—ñ
-	 *         —áF@+9ŠÔ‚Ìê‡   +09:00
-	 *             -3ŠÔ‚Ìê‡  -03:00
-	 *             0‚Ìê‡@@@@@Z
+	 * ã‚¿ã‚¤ãƒ ã‚¾ãƒ¼ãƒ³ã®æ–‡å­—åˆ—ã‚’ç”Ÿæˆã™ã‚‹
+	 *  RFC 3339ã§ä½¿ç”¨ã™ã‚‹ãŸã‚æ™‚ã€åˆ†ã®åŒºåˆ‡ã‚Šã«ï¼šã‚’å…¥ã‚Œã‚‹
+	 * @param tz ã‚¿ã‚¤ãƒ ã‚¾ãƒ¼ãƒ³
+	 * @return ã‚¿ã‚¤ãƒ ã‚¾ãƒ¼ãƒ³æ–‡å­—åˆ—
+	 *         ä¾‹ï¼šã€€+9æ™‚é–“ã®å ´åˆ   +09:00
+	 *             -3æ™‚é–“ã®å ´åˆ  -03:00
+	 *             0ã®å ´åˆã€€ã€€ã€€ã€€ã€€Z
 	 */
 	public static String timeZoneToString(TimeZone tz){
-		// ƒJƒŒƒ“ƒ_[ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬
+		// ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ
 		Calendar cal = Calendar.getInstance();
 		String dir=null;
-		// TimeZone‚©‚çƒ~ƒŠ•b’PˆÊ‚ÌUTC‚©‚ç‚Ì‚¸‚ê‚ğæ“¾
+		// TimeZoneã‹ã‚‰ãƒŸãƒªç§’å˜ä½ã®UTCã‹ã‚‰ã®ãšã‚Œã‚’å–å¾—
 		int offset = tz.getRawOffset();
-		// ³•‰‚Æ’l‚Ì•ª—£
+		// æ­£è² ã¨å€¤ã®åˆ†é›¢
 		if(offset<0){
-			// offset‚ªƒ}ƒCƒiƒX‚È‚ç•„†‚Í-
-			// ‚¸‚ê‚Í³‚É‚µ‚Ä‚¨‚­
+			// offsetãŒãƒã‚¤ãƒŠã‚¹ãªã‚‰ç¬¦å·ã¯-
+			// ãšã‚Œã¯æ­£ã«ã—ã¦ãŠã
 			offset = -offset;
 			dir = "-";
 		}else if(offset>0){
-			// ƒIƒtƒZƒbƒg‚ªƒvƒ‰ƒX‚È‚ç•„†‚Í{
+			// ã‚ªãƒ•ã‚»ãƒƒãƒˆãŒãƒ—ãƒ©ã‚¹ãªã‚‰ç¬¦å·ã¯ï¼‹
 			dir = "+";
 		}else if(offset == 0){
-			// UTC‚Éˆê’v‚·‚éê‡‚ÍZ‚ğ•Ô‚·
+			// UTCã«ä¸€è‡´ã™ã‚‹å ´åˆã¯Zã‚’è¿”ã™
 			return "Z";
 		}
-		// A•ª‚ğŒvZ‚µCalendar‚ÉƒZƒbƒg
+		// æ™‚ã€åˆ†ã‚’è¨ˆç®—ã—Calendarã«ã‚»ãƒƒãƒˆ
 		int offsetMin = offset/MINUTE_BY_MILLI;
 		int offsetHour = offsetMin/HOUR_BY_MINUTES;
 		offsetMin=offsetMin%60;
 		cal.set(Calendar.HOUR_OF_DAY, offsetHour);
 		cal.set(Calendar.MINUTE, offsetMin);
-		//@³•‰‚Ì•„†‚ğ’Ç‰Á‚µ‚½•¶š—ñ‚ğ•Ô‚·
+		//ã€€æ­£è² ã®ç¬¦å·ã‚’è¿½åŠ ã—ãŸæ–‡å­—åˆ—ã‚’è¿”ã™
 		return dir+timeFormat.format(cal.getTime());
 	}
 
 	/**
-	 * Calendar‚©‚çDB‚ÉŠi”[‚·‚é‚½‚ß‚Ì•¶š—ñ‚ğì¬‚·‚é
-	 * @param cal •ÏŠ·‚à‚Æ‚Ì’l
-	 * @return “ú•¶š—ñ
+	 * Calendarã‹ã‚‰DBã«æ ¼ç´ã™ã‚‹ãŸã‚ã®æ–‡å­—åˆ—ã‚’ä½œæˆã™ã‚‹
+	 * @param cal å¤‰æ›ã‚‚ã¨ã®å€¤
+	 * @return æ—¥æ™‚æ–‡å­—åˆ—
 	 */
 	public static String toDBDateString(Calendar cal){
-		// RFC 822Œ`®‚Å•¶š—ñ‚ğ¶¬
+		// RFC 822å½¢å¼ã§æ–‡å­—åˆ—ã‚’ç”Ÿæˆ
 		String dateStr = RFC822MilliDateFormat.format(cal.getTime());
-		// ƒ^ƒCƒ€ƒ][ƒ“•”•ª‚ğˆ—
+		// ã‚¿ã‚¤ãƒ ã‚¾ãƒ¼ãƒ³éƒ¨åˆ†ã‚’å‡¦ç†
 		if(dateStr.matches(".+[+-][0-9]{4}$")){
 			dateStr = dateStr.replaceAll("([+-][0-9]{2})([0-9]{2})","$1:$2");
 		}
 		return dateStr;
 	}
 	/**
-	 * “ú•¶š—ñ‚©‚çƒJƒŒƒ“ƒ_[‚Ö‚Ì•ÏŠ·
-	 * @param startTime •ÏŠ·‚à‚Æ‚Ì“ú•¶š—ñ
+	 * æ—¥æ™‚æ–‡å­—åˆ—ã‹ã‚‰ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã¸ã®å¤‰æ›
+	 * @param startTime å¤‰æ›ã‚‚ã¨ã®æ—¥æ™‚æ–‡å­—åˆ—
 	 * @return Calendar 
 	 */
 	public static GregorianCalendar toCalendar(String startTime) {
@@ -104,11 +104,11 @@ public class DateStrCls {
 		if(startTime == null){
 			return calendar;
 		}
-		// •¶š—ñ‚ğ”’lˆÈŠO‚Ì•¶š‚Å•ªŠ„‚µ‚ÄØ‚è•ª‚¯‚é
+		// æ–‡å­—åˆ—ã‚’æ•°å€¤ä»¥å¤–ã®æ–‡å­—ã§åˆ†å‰²ã—ã¦åˆ‡ã‚Šåˆ†ã‘ã‚‹
 		String[] strs = startTime.split("[^0-9]");
 		TimeZone timeZone = TimeZone.getDefault();
 		if(startTime.matches("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$")){
-			// “ú•t‚Ì‚İ‚Ì•¶š—ñ@‚ğ‚O‚OF‚O‚O‚Éİ’è
+			// æ—¥ä»˜ã®ã¿ã®æ–‡å­—åˆ—ã€€æ™‚åˆ»ã‚’ï¼ï¼ï¼šï¼ï¼ã«è¨­å®š
 			calendar.set(Calendar.YEAR, Integer.valueOf(strs[0]));
 			calendar.set(Calendar.MONTH,Integer.valueOf(strs[1])-1);
 			calendar.set(Calendar.DAY_OF_MONTH,Integer.valueOf(strs[2]));
@@ -118,7 +118,7 @@ public class DateStrCls {
 			calendar.set(Calendar.MILLISECOND,0);
 			calendar.setTimeZone(timeZone);
 		}else{
-			// “ú•¶š—ñ@”’l•¶š—ñ‚ğ”’l‚É•ÏŠ·‚µ‚Äİ’è
+			// æ—¥æ™‚æ–‡å­—åˆ—ã€€æ•°å€¤æ–‡å­—åˆ—ã‚’æ•°å€¤ã«å¤‰æ›ã—ã¦è¨­å®š
 			calendar.set(Calendar.YEAR, Integer.valueOf(strs[0]));
 			calendar.set(Calendar.MONTH,Integer.valueOf(strs[1])-1);
 			calendar.set(Calendar.DAY_OF_MONTH,Integer.valueOf(strs[2]));
@@ -126,26 +126,26 @@ public class DateStrCls {
 			calendar.set(Calendar.MINUTE,Integer.valueOf(strs[4]));
 			calendar.set(Calendar.SECOND,Integer.valueOf(strs[5]));
 			calendar.set(Calendar.MILLISECOND,Integer.valueOf(strs[6]));
-			// TimeZone‚Ìƒpƒ^[ƒ“‚É‚æ‚éˆ—
+			// TimeZoneã®ãƒ‘ã‚¿ãƒ¼ãƒ³ã«ã‚ˆã‚‹å‡¦ç†
 			if(startTime.matches(".+Z$")){
 				// UTC
 				timeZone.setRawOffset(0);
 			}else if(startTime.matches(".+\\+[0-9][0-9]:[0-9][0-9]$")){
-				// ƒIƒtƒZƒbƒg‚ªƒ}ƒCƒiƒX
+				// ã‚ªãƒ•ã‚»ãƒƒãƒˆãŒãƒã‚¤ãƒŠã‚¹
 				timeZone.setRawOffset((Integer.valueOf(strs[7])*HOUR_BY_MINUTES+Integer.valueOf(strs[8]))*MINUTE_BY_MILLI);
 			}else if(startTime.matches(".+-[0-9][0-9]:[0-9][0-9]$")){
-				// ƒIƒtƒZƒbƒg‚ªƒvƒ‰ƒX
+				// ã‚ªãƒ•ã‚»ãƒƒãƒˆãŒãƒ—ãƒ©ã‚¹
 				timeZone.setRawOffset(-(Integer.valueOf(strs[7])*HOUR_BY_MINUTES+Integer.valueOf(strs[8]))*MINUTE_BY_MILLI);
 			}
-			// TimeZone‚ğİ’è
+			// TimeZoneã‚’è¨­å®š
 			calendar.setTimeZone(timeZone);
 		}
 		return calendar;
 	}
 
 	/**
-	 * ƒJƒŒƒ“ƒ_[“úƒf[ƒ^‚ğUTCi‹¦’è¢ŠEj‚Å•\‚µ‚½•¶š—ñ‚É•ÏŠ·‚µ‚Ü‚·B
-	 * “ú–{ŠÔ‚Æ‚Í9ŠÔ‚Ì‚¸‚ê‚ª‚ ‚è‚Ü‚·B
+	 * ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼æ—¥æ™‚ãƒ‡ãƒ¼ã‚¿ã‚’UTCï¼ˆå”å®šä¸–ç•Œæ™‚ï¼‰ã§è¡¨ã—ãŸæ–‡å­—åˆ—ã«å¤‰æ›ã—ã¾ã™ã€‚
+	 * æ—¥æœ¬æ™‚é–“ã¨ã¯9æ™‚é–“ã®ãšã‚ŒãŒã‚ã‚Šã¾ã™ã€‚
 	 * @param cal
 	 * @return
 	 */

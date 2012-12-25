@@ -9,20 +9,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
 public class EventProvider extends ContentProvider {
-	// EventDatabaseHelper‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// EventDatabaseHelperã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private EventDatabaseHelper mEventDatabaseHelper = null;
-	// Œ»İ‚Ìƒf[ƒ^ƒx[ƒX‚Ìƒo[ƒWƒ‡ƒ“@‰Šú‚È‚Ì‚Å‚P
+	// ç¾åœ¨ã®ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã€€åˆæœŸãªã®ã§ï¼‘
 	private static final int CURRENT_DATABASE_VERSION = 2;
 
 	public boolean onCreate() {
-		// EventDatabaseHelper‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚é
+		// EventDatabaseHelperã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã™ã‚‹
 		mEventDatabaseHelper = new EventDatabaseHelper(getContext());
 		return false;
 	}
 
 	/**
 	 * getType
-	 * “Á‚É•K—v‚Í‚È‚¢‚Ì‚ÅAnull‚ğ•Ô‚·
+	 * ç‰¹ã«å¿…è¦ã¯ãªã„ã®ã§ã€nullã‚’è¿”ã™
 	 */
 	public String getType(Uri arg0) {
 		return null;
@@ -30,76 +30,76 @@ public class EventProvider extends ContentProvider {
 
 	/**
 	 * query
-	 *  ƒf[ƒ^ƒx[ƒX‚ğŒŸõ‚µ‚Ä’l‚ğ•Ô‚·
+	 *  ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ¤œç´¢ã—ã¦å€¤ã‚’è¿”ã™
 	 */
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		// “Ç‚İo‚µê—p‚Åƒf[ƒ^ƒx[ƒX‚ğŠJ‚­
+		// èª­ã¿å‡ºã—å°‚ç”¨ã§ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’é–‹ã
 		SQLiteDatabase db = mEventDatabaseHelper.getReadableDatabase();
-		// ˆø”‚Ìƒpƒ‰ƒ[ƒ^[‚Åquery‚ğÀs‚·‚é
+		// å¼•æ•°ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã§queryã‚’å®Ÿè¡Œã™ã‚‹
 		Cursor c = db.query(EventInfo.DB_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 		return c;
 	}
 
 	/**
 	 * update
-	 *  ƒf[ƒ^ƒx[ƒX‚ÌƒŒƒR[ƒh‚ğXV‚·‚é
+	 *  ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’æ›´æ–°ã™ã‚‹
 	 */
 	public int update(Uri uri, ContentValues values, String selection,String[] selectionArgs) {
-		// ‘‚«‚İ‰Â”\‚Èó‘Ô‚Åƒf[ƒ^ƒx[ƒX‚ğŠJ‚­
+		// æ›¸ãè¾¼ã¿å¯èƒ½ãªçŠ¶æ…‹ã§ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’é–‹ã
 		SQLiteDatabase db = mEventDatabaseHelper.getWritableDatabase();
-		// ˆø”‚Ìƒpƒ‰ƒ[ƒ^[‚É]‚Á‚Äupdate‚ğÀs‚·‚é
+		// å¼•æ•°ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã«å¾“ã£ã¦updateã‚’å®Ÿè¡Œã™ã‚‹
 		int numUpdated = db.update(EventInfo.DB_NAME, values, selection, selectionArgs);
-		// Œ‹‰Ê‚Æ‚µ‚ÄXV‚³‚ê‚½ƒŒƒR[ƒh”‚ğ•Ô‚·
+		// çµæœã¨ã—ã¦æ›´æ–°ã•ã‚ŒãŸãƒ¬ã‚³ãƒ¼ãƒ‰æ•°ã‚’è¿”ã™
 		return numUpdated;
 	}
 
 	/**
 	 * insert
-	 *  ƒf[ƒ^ƒx[ƒX‚ÉƒŒƒR[ƒh‚ğ’Ç‰Á‚·‚é
+	 *  ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’è¿½åŠ ã™ã‚‹
 	 */
 	public Uri insert(Uri uri, ContentValues values) {
-		// ‘‚«‚İ‰Â”\‚Èó‘Ô‚Åƒf[ƒ^ƒx[ƒX‚ğŠJ‚­
+		// æ›¸ãè¾¼ã¿å¯èƒ½ãªçŠ¶æ…‹ã§ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’é–‹ã
 		SQLiteDatabase db = mEventDatabaseHelper.getWritableDatabase();
-		// ˆø”‚Ìƒpƒ‰ƒ[ƒ^[‚É]‚Á‚Äinsert‚ğÀs‚·‚é
+		// å¼•æ•°ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã«å¾“ã£ã¦insertã‚’å®Ÿè¡Œã™ã‚‹
 		long newId = db.insert(EventInfo.DB_NAME, null, values);
-		// V‹K‚É’Ç‰Á‚³‚ê‚½ƒŒƒR[ƒh‚ÌID‚ª‹A‚Á‚Ä‚­‚é‚Ì‚Å‚»‚ê‚ğŒ³‚ÉUri‚ğì¬‚·‚é
+		// æ–°è¦ã«è¿½åŠ ã•ã‚ŒãŸãƒ¬ã‚³ãƒ¼ãƒ‰ã®IDãŒå¸°ã£ã¦ãã‚‹ã®ã§ãã‚Œã‚’å…ƒã«Uriã‚’ä½œæˆã™ã‚‹
 		Uri newUri =  Uri.parse(uri+"/"+newId);
-		// V‹KƒŒƒR[ƒh‚ğw‚·Uri‚ğ•Ô‚·
+		// æ–°è¦ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’æŒ‡ã™Uriã‚’è¿”ã™
 		return newUri;
 	}
 
 	/**
 	 * delete
-	 *  ƒf[ƒ^ƒx[ƒX‚ÌƒŒƒR[ƒh‚ğíœ‚·‚é
+	 *  ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’å‰Šé™¤ã™ã‚‹
 	 */
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// ‘‚«‚İ‰Â”\‚Èó‘Ô‚Åƒf[ƒ^ƒx[ƒX‚ğŠJ‚­
+		// æ›¸ãè¾¼ã¿å¯èƒ½ãªçŠ¶æ…‹ã§ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’é–‹ã
 		SQLiteDatabase db = mEventDatabaseHelper.getWritableDatabase();
-		// ˆø”‚Ìƒpƒ‰ƒ[ƒ^‚É]‚Á‚Ädelete‚ğÀs‚·‚é
+		// å¼•æ•°ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã«å¾“ã£ã¦deleteã‚’å®Ÿè¡Œã™ã‚‹
 		int numDeleted = db.delete(EventInfo.DB_NAME,selection,selectionArgs);
-		// íœ‚³‚ê‚½ƒŒƒR[ƒh”‚ğ•Ô‚·
+		// å‰Šé™¤ã•ã‚ŒãŸãƒ¬ã‚³ãƒ¼ãƒ‰æ•°ã‚’è¿”ã™
 		return numDeleted;
 	}
 
 	/**
 	 * EventDatabaseHelper
-	 *  SQLiteOpenHelper‚ğŒp³‚µAƒf[ƒ^ƒx[ƒXƒtƒ@ƒCƒ‹‚Ìì¬‚È‚Ç‚ğs‚¤
+	 *  SQLiteOpenHelperã‚’ç¶™æ‰¿ã—ã€ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½œæˆãªã©ã‚’è¡Œã†
 	 *
 	 */
 	public class EventDatabaseHelper extends SQLiteOpenHelper {
 
 		public EventDatabaseHelper(Context context) {
-			// superƒNƒ‰ƒX‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğŒÄ‚Ño‚·ˆ—
+			// superã‚¯ãƒ©ã‚¹ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’å‘¼ã³å‡ºã™å‡¦ç†
 			super(context,EventInfo.DB_NAME+".db",null,CURRENT_DATABASE_VERSION);
 		}
 
 		/**
-		 * onCreate‚Å‚Íƒe[ƒuƒ‹‚ğì¬‚·‚é
-		 * EventDatabaseHelper‚ÌonCreate‚Íƒe[ƒuƒ‹‚ª‘¶İ‚µ‚È‚¢‚ÉŒÄ‚Ño‚³‚ê‚é
+		 * onCreateã§ã¯ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã™ã‚‹
+		 * EventDatabaseHelperã®onCreateã¯ãƒ†ãƒ¼ãƒ–ãƒ«ãŒå­˜åœ¨ã—ãªã„æ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹
 		 */
 		public void onCreate(SQLiteDatabase db) {
-			// ƒe[ƒuƒ‹‚ğì¬‚·‚éSQLƒXƒe[ƒgƒƒ“ƒg‚ğ•¶š—ñ‚Æ‚µ‚Äì¬
+			// ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã™ã‚‹SQLã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã‚’æ–‡å­—åˆ—ã¨ã—ã¦ä½œæˆ
 			String sql = "CREATE TABLE "+EventInfo.DB_NAME+"("
 					+ EventInfo.ID + " INTEGER PRIMARY KEY,"
 					+ EventInfo.DELETED + " INTEGER,"
@@ -119,20 +119,20 @@ public class EventProvider extends ContentProvider {
 					+ EventInfo.EVENT_ID + " TEXT,"
 					+ EventInfo.ETAG + " TEXT"
 					+ ");";
-			// SQLƒXƒe[ƒgƒƒ“ƒg‚ğÀs
+			// SQLã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã‚’å®Ÿè¡Œ
 			db.execSQL(sql);
 		}
 
 		/**
 		 * onUpgrade
-		 *  onUpgrade‚ÍƒAƒvƒŠ‚Ìƒo[ƒWƒ‡ƒ“‚ªã‚ª‚Á‚Äƒf[ƒ^ƒx[ƒX‚ÌƒŒƒR[ƒh‚É•ÏX‚ª‚ ‚Á‚½ê‡‚È‚Ç
-		 *  Database‚Ìƒo[ƒWƒ‡ƒ“‚ªˆá‚Á‚Ä‚¢‚é‚Æ‚«‚ÉŒÄ‚Ño‚³‚ê‚é
+		 *  onUpgradeã¯ã‚¢ãƒ—ãƒªã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ãŒä¸ŠãŒã£ã¦ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ã«å¤‰æ›´ãŒã‚ã£ãŸå ´åˆãªã©
+		 *  Databaseã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ãŒé•ã£ã¦ã„ã‚‹ã¨ãã«å‘¼ã³å‡ºã•ã‚Œã‚‹
 		 *  
 		 */
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// SQL‚Åƒe[ƒuƒ‹‚ğíœ‚·‚éƒXƒe[ƒgƒƒ“ƒg‚ğÀs
+			// SQLã§ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å‰Šé™¤ã™ã‚‹ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã‚’å®Ÿè¡Œ
 			db.execSQL("DROP TABLE IF EXISTS " + EventInfo.DB_NAME);
-			// onCreate‚ğƒR[ƒ‹‚µ‚Äƒe[ƒuƒ‹‚ğÄì¬
+			// onCreateã‚’ã‚³ãƒ¼ãƒ«ã—ã¦ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å†ä½œæˆ
 			onCreate(db);
 		}
 

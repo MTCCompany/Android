@@ -19,7 +19,7 @@ public class WidgetService extends Service {
 	@Override
 	public void onStart(Intent intent, int request){
 		super.onStart(intent,request);
-		// Widget‚ÌXV‚ğs‚¤
+		// Widgetã®æ›´æ–°ã‚’è¡Œã†
 		updateWidget(getApplicationContext());
 	}
 	@Override
@@ -27,7 +27,7 @@ public class WidgetService extends Service {
 		return null;
 	}
 	public void updateWidget(Context context){
-		// ƒJƒŒƒ“ƒ_[‚Ìƒf[ƒ^ƒx[ƒX‚©‚ç’¼‹ß‚Ì—\’è‚ğæ‚èo‚·B
+		// ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰ç›´è¿‘ã®äºˆå®šã‚’å–ã‚Šå‡ºã™ã€‚
 		GregorianCalendar cal = new GregorianCalendar();
 		String nowDateStr = DateStrCls.toDBDateString(cal);
 		ContentResolver resolver = context.getContentResolver();
@@ -36,7 +36,7 @@ public class WidgetService extends Service {
 		String[] selectionArgs = {nowDateStr};
 		String sortOrder = EventInfo.START_TIME;
 		Cursor c = resolver.query(EventCalendarActivity.RESOLVER_URI, projection, selection, selectionArgs, sortOrder);
-		// ’¼‹ß‚Ì—\’è‚Ì“à—e‚©‚ç•¶š—ñ‚ğì¬‚µAView‚É•\¦‚·‚é
+		// ç›´è¿‘ã®äºˆå®šã®å†…å®¹ã‹ã‚‰æ–‡å­—åˆ—ã‚’ä½œæˆã—ã€Viewã«è¡¨ç¤ºã™ã‚‹
 		StringBuilder events = new StringBuilder();
 		if(c.moveToNext()){
 			String t = c.getString(c.getColumnIndex(EventInfo.START_TIME));
@@ -50,10 +50,10 @@ public class WidgetService extends Service {
 			events.append(context.getString(R.string.noevents));
 		}
 		c.close();
-		// Widget‚Ì•`‰æ‚ÍRemoteView‚ğg‚Á‚Ä•`‰æ‚·‚é‚Ì‚Å
-		// ’Êí‚Ì•`‰æ‚Æ‚Í­‚µˆÙ‚È‚é
+		// Widgetã®æç”»ã¯RemoteViewã‚’ä½¿ã£ã¦æç”»ã™ã‚‹ã®ã§
+		// é€šå¸¸ã®æç”»ã¨ã¯å°‘ã—ç•°ãªã‚‹
 		RemoteViews rViews = new RemoteViews(getPackageName(),R.layout.calendarwidget);
-		// RemoveView‚ÌsetTextViewText‚ğ“Ç‚ñ‚Å•¶š—ñ‚ğ•`‰æ‚·‚é
+		// RemoveViewã®setTextViewTextã‚’èª­ã‚“ã§æ–‡å­—åˆ—ã‚’æç”»ã™ã‚‹
 		rViews.setTextViewText(R.id.widgetText, events.toString());
 
 		setOnClick(context,rViews);
@@ -62,7 +62,7 @@ public class WidgetService extends Service {
 		manager.updateAppWidget(thisWidget, rViews);
 	}
 	/**
-	 * ƒEƒBƒWƒFƒbƒg‚ğƒNƒŠƒbƒN‚µ‚½‚çƒCƒxƒ“ƒgƒJƒŒƒ“ƒ_[‚ğ‹N“®‚·‚é—l‚Éİ’è‚·‚é
+	 * ã‚¦ã‚£ã‚¸ã‚§ãƒƒãƒˆã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸã‚‰ã‚¤ãƒ™ãƒ³ãƒˆã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚’èµ·å‹•ã™ã‚‹æ§˜ã«è¨­å®šã™ã‚‹
 	 *
 	 * @param Context
 	 * @param RemoteView

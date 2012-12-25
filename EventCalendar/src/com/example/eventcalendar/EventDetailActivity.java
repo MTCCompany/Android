@@ -21,42 +21,42 @@ import android.widget.TextView;
 
 /**
  * EventDetailActivity
- *  1“ú•ª‚ÌƒCƒxƒ“ƒg‚ÌÚ×‚ğ•\¦‚·‚é
+ *  1æ—¥åˆ†ã®ã‚¤ãƒ™ãƒ³ãƒˆã®è©³ç´°ã‚’è¡¨ç¤ºã™ã‚‹
  */
 public class EventDetailActivity extends Activity  implements OnItemLongClickListener {
-	// “ú•t‚Ì•¶š—ñ
+	// æ—¥ä»˜ã®æ–‡å­—åˆ—
 	private String mDateString = null;
-	// ƒCƒxƒ“ƒgƒGƒfƒBƒ^‹N“®‚Ì‚½‚ß‚ÌRequestCode
+	// ã‚¤ãƒ™ãƒ³ãƒˆã‚¨ãƒ‡ã‚£ã‚¿èµ·å‹•ã®ãŸã‚ã®RequestCode
 	public static final int EVENT_EDITOR = 2;
-	// EventListView‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// EventListViewã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private ListView mEventListView = null;
-	// V‹KƒCƒxƒ“ƒg’Ç‰Áƒƒjƒ…[—pID
+	// æ–°è¦ã‚¤ãƒ™ãƒ³ãƒˆè¿½åŠ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç”¨ID
 	private static final int NEW_EVENT_MENU_ID = 1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.eventdetail);
-		// ŒÄ‚Ño‚µ‚à‚Æ‚©‚ç‘—‚ç‚ê‚½Intent‚ğæ“¾
+		// å‘¼ã³å‡ºã—ã‚‚ã¨ã‹ã‚‰é€ã‚‰ã‚ŒãŸIntentã‚’å–å¾—
 		Intent intent = getIntent();
-		// Intent‚Ì@Extra‚©‚ç“ú•t•¶š—ñ‚ğæ“¾
+		// Intentã®ã€€Extraã‹ã‚‰æ—¥ä»˜æ–‡å­—åˆ—ã‚’å–å¾—
 		mDateString  = intent.getStringExtra("date");
-		// dateView‚É“ú•t‚ğƒZƒbƒg
+		// dateViewã«æ—¥ä»˜ã‚’ã‚»ãƒƒãƒˆ
 		TextView dateView = (TextView)findViewById(R.id.detailDate);
 		dateView.setText(mDateString);
 		mEventListView = (ListView)findViewById(R.id.eventList);
-		// usetListAdaptervƒƒ\ƒbƒh‚ğì¬‚·‚é
+		// ã€ŒsetListAdapterã€ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ä½œæˆã™ã‚‹
 		setListAdapter();
-		// eventListView‚ÌƒAƒCƒeƒ€‚ğƒNƒŠƒbƒN‚³‚ê‚½‚Ìˆ—‚ğƒZƒbƒg
+		// eventListViewã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸæ™‚ã®å‡¦ç†ã‚’ã‚»ãƒƒãƒˆ
 		mEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
-				// Intent‚ğì¬
+				// Intentã‚’ä½œæˆ
 				Intent intent = new Intent(EventDetailActivity.this,EventEditorActivity.class);
-				// ArrayAdapter‚ÌŒ^‚ğuEventInfovƒNƒ‰ƒX‚É‚Ü‚Æ‚ß‚é
+				// ArrayAdapterã®å‹ã‚’ã€ŒEventInfoã€ã‚¯ãƒ©ã‚¹ã«ã¾ã¨ã‚ã‚‹
 				EventInfo event = (EventInfo)parent.getAdapter().getItem(position);
-				// ID‚Æ“ú•t‚Ì•¶š—ñ‚ğExtra‚ÉƒZƒbƒg
+				// IDã¨æ—¥ä»˜ã®æ–‡å­—åˆ—ã‚’Extraã«ã‚»ãƒƒãƒˆ
 				intent.putExtra(EventInfo.ID, event.getId());
 				intent.putExtra("date",mDateString);
-				// EventEditorActivity‚ğ‹N“®
+				// EventEditorActivityã‚’èµ·å‹•
 				startActivityForResult(intent,EVENT_EDITOR);
 			}
 		});
@@ -69,30 +69,30 @@ public class EventDetailActivity extends Activity  implements OnItemLongClickLis
 
 	/**
 	 * getEventDetail
-	 *  “ú•t‚ğw’è‚µ‚ÄEvent‚ÌÚ×‚ÌArray‚ğ•Ô‚·
-	 * @param date “ú•t•¶š—ñ
-	 * @return ArrayList<EventInfo> EventInfo‚ÌArray
+	 *  æ—¥ä»˜ã‚’æŒ‡å®šã—ã¦Eventã®è©³ç´°ã®Arrayã‚’è¿”ã™
+	 * @param date æ—¥ä»˜æ–‡å­—åˆ—
+	 * @return ArrayList<EventInfo> EventInfoã®Array
 	 */
 	private ArrayList<EventInfo> getEventDetail(String date){
 		ArrayList<EventInfo> events = new ArrayList<EventInfo>();
-		// “ú•t‚ğw’è‚µ‚Äî•ñ‚ğæ“¾
+		// æ—¥ä»˜ã‚’æŒ‡å®šã—ã¦æƒ…å ±ã‚’å–å¾—
 		ContentResolver contentResolver = getContentResolver();
-		// íœƒtƒ‰ƒO‚Ì‚Â‚¢‚Ä‚¢‚éƒf[ƒ^‚ÍŒŸõ‚µ‚È‚¢
+		// å‰Šé™¤ãƒ•ãƒ©ã‚°ã®ã¤ã„ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã¯æ¤œç´¢ã—ãªã„
 	    String selection = EventInfo.DELETED + " = 0 and "+EventInfo.START_TIME+" LIKE ?";
 		String[] selectionArgs = {date+"%"};
 		String sortOrder = EventInfo.START_TIME;
 		Cursor c = contentResolver.query(EventCalendarActivity.RESOLVER_URI, null, selection, selectionArgs, sortOrder);
 		while(c.moveToNext()){
-			// î•ñ‚ğŠi”[‚·‚é‚½‚ß‚ÌEventInfo‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬
+			// æƒ…å ±ã‚’æ ¼ç´ã™ã‚‹ãŸã‚ã®EventInfoã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ
 			EventInfo event = new EventInfo(contentResolver);
-			// î•ñ‚ğŠi”[‚·‚é
+			// æƒ…å ±ã‚’æ ¼ç´ã™ã‚‹
 			event.setId(c.getLong(c.getColumnIndex(EventInfo.ID)));
 			event.setTitle(c.getString(c.getColumnIndex(EventInfo.TITLE)));
 			event.setStart(c.getString(c.getColumnIndex(EventInfo.START_TIME)));
 			event.setEnd(c.getString(c.getColumnIndex(EventInfo.END_TIME)));
 			event.setWhere(c.getString(c.getColumnIndex(EventInfo.WHERE)));
 			event.setContent(c.getString(c.getColumnIndex(EventInfo.CONTENT)));
-			// Array‚É’Ç‰Á
+			// Arrayã«è¿½åŠ 
 			events.add(event);
 		}
 		c.close();
@@ -100,42 +100,42 @@ public class EventDetailActivity extends Activity  implements OnItemLongClickLis
 	}
 	/**
 	 * onActivityResult
-	 *  ŒÄ‚Ño‚µ‚½Editor‚Ìˆ—‚ªŠ®—¹‚µ‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚é
-	 * @param requestCode ‹N“®‚Éw’è‚µ‚½requestCode
-	 * @param resultCode ŒÄ‚Ño‚µ‚½Activity‚ªI—¹‚Éİ’è‚µ‚½I—¹ƒR[ƒh
-	 * @param data ŒÄ‚Ño‚µ‚½Activity‚ªI—¹‚Éİ’è‚µ‚½Intent
+	 *  å‘¼ã³å‡ºã—ãŸEditorã®å‡¦ç†ãŒå®Œäº†ã—ãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹
+	 * @param requestCode èµ·å‹•æ™‚ã«æŒ‡å®šã—ãŸrequestCode
+	 * @param resultCode å‘¼ã³å‡ºã—ãŸActivityãŒçµ‚äº†æ™‚ã«è¨­å®šã—ãŸçµ‚äº†ã‚³ãƒ¼ãƒ‰
+	 * @param data å‘¼ã³å‡ºã—ãŸActivityãŒçµ‚äº†æ™‚ã«è¨­å®šã—ãŸIntent
 	 */
 	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 		if(requestCode == EVENT_EDITOR && resultCode == RESULT_OK){
 			if(data.getBooleanExtra(EventCalendarActivity.CHANGED,false)){
-				// ƒAƒNƒeƒBƒrƒeƒB‚©‚çCHANGED‚Étrue‚ª•Ô‚Á‚Ä‚«‚Ä‚¢‚½‚çlistAdapter‚ğXV‚·‚é
+				// ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ã‹ã‚‰CHANGEDã«trueãŒè¿”ã£ã¦ãã¦ã„ãŸã‚‰listAdapterã‚’æ›´æ–°ã™ã‚‹
 				setListAdapter();
 				Intent intent = new Intent();
 				intent.putExtra(EventCalendarActivity.CHANGED, true);
-				// EventCalendarActivity ‚Å‚àXV‚ª•K—v‚È‚Ì‚Å
-				// EventDetailActivity‚ÌŒ‹‰Ê‚Æ‚µ‚Ä“¯—l‚Ì’l‚ğƒZƒbƒg‚·‚é
+				// EventCalendarActivity ã§ã‚‚æ›´æ–°ãŒå¿…è¦ãªã®ã§
+				// EventDetailActivityã®çµæœã¨ã—ã¦åŒæ§˜ã®å€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 				setResult(RESULT_OK,intent);
 			}
 		}
 	}
 
 	/**
-	 * ƒƒjƒ…[ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚éƒƒ\ƒbƒh
-	 *  ƒƒjƒ…[ƒAƒCƒeƒ€‚ğ€”õ‚·‚é
+	 * ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
+	 *  ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ã‚’æº–å‚™ã™ã‚‹
 	 */
 	public boolean onCreateOptionsMenu (Menu menu){
-		// ƒAƒCƒeƒ€‚ğ’Ç‰Á
+		// ã‚¢ã‚¤ãƒ†ãƒ ã‚’è¿½åŠ 
 		menu.add(Menu.NONE,NEW_EVENT_MENU_ID,Menu.NONE,R.string.newEvent);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
-	 * ƒƒjƒ…[‚ğŠJ‚¢‚ÄA‘I‘ğ‚³‚ê‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚éƒƒ\ƒbƒh
+	 * ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ã„ã¦ã€é¸æŠã•ã‚ŒãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
 	 */
 	public boolean onOptionsItemSelected (MenuItem item){
 		if(item.getItemId() == NEW_EVENT_MENU_ID){
-			// ƒƒjƒ…[‚ÌID‚ªˆê’v‚µ‚½‚ç
-			// ID=0‚ÅEventEditorActivity‚ğ‹N“®
+			// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®IDãŒä¸€è‡´ã—ãŸã‚‰
+			// ID=0ã§EventEditorActivityã‚’èµ·å‹•
 			Intent intent = new Intent(EventDetailActivity.this,EventEditorActivity.class);
 			intent.putExtra(EventInfo.ID, 0);
 			intent.putExtra("date", mDateString);
@@ -143,30 +143,30 @@ public class EventDetailActivity extends Activity  implements OnItemLongClickLis
 		}
 		return true;
 	}
-	// íœ‚·‚×‚«ƒŒƒR[ƒh‚ÌId
+	// å‰Šé™¤ã™ã¹ããƒ¬ã‚³ãƒ¼ãƒ‰ã®Id
 	private long mDeleteId = 0;
 	/**
-	 * ListView‚ÌItem‚Å’·‰Ÿ‚µ‚³‚ê‚½‚Æ‚«‚ÉŒÄ‚Ño‚³‚ê‚éƒŠƒXƒi[
+	 * ListViewã®Itemã§é•·æŠ¼ã—ã•ã‚ŒãŸã¨ãã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
 		EventInfo event = (EventInfo)parent.getAdapter().getItem(position);
 		mDeleteId = event.getId();
-		// uAlertDialog.Builderv‚ğì¬‚·‚é
+		// ã€ŒAlertDialog.Builderã€ã‚’ä½œæˆã™ã‚‹
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-		// ƒŠƒ\[ƒX‚©‚çƒ^ƒCƒgƒ‹•¶š—ñ‚ğİ’è
+		// ãƒªã‚½ãƒ¼ã‚¹ã‹ã‚‰ã‚¿ã‚¤ãƒˆãƒ«æ–‡å­—åˆ—ã‚’è¨­å®š
 		alertDialogBuilder.setTitle(R.string.deleteConfirm);
-		// OKƒ{ƒ^ƒ“i¡‰ñ‚Ííœƒ{ƒ^ƒ“j‚Ì•¶š—ñ‚Æˆ—ŠÖ”‚Ìİ’è
+		// OKãƒœã‚¿ãƒ³ï¼ˆä»Šå›ã¯å‰Šé™¤ãƒœã‚¿ãƒ³ï¼‰ã®æ–‡å­—åˆ—ã¨å‡¦ç†é–¢æ•°ã®è¨­å®š
 		alertDialogBuilder.setPositiveButton(R.string.deleteOK, new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
 				ContentResolver contentResolver = getContentResolver();
 				String selection = EventInfo.ID+" = "+mDeleteId;
-				// Deletedƒtƒ‰ƒO‚ÆModifiedƒtƒ‰ƒO‚ğƒZƒbƒg‚µUpdate
-				// Delete‚Ís‚í‚È‚¢
+				// Deletedãƒ•ãƒ©ã‚°ã¨Modifiedãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆã—Update
+				// Deleteã¯è¡Œã‚ãªã„
 				ContentValues cv = new ContentValues();
 				cv.put(EventInfo.DELETED, 1);
 				cv.put(EventInfo.MODIFIED, 1);
 				contentResolver.update(EventCalendarActivity.RESOLVER_URI, cv, selection, null);
-				// listAdapter ‚ğXV‚·‚é
+				// listAdapter ã‚’æ›´æ–°ã™ã‚‹
 				setListAdapter();
 				Intent intent = new Intent();
 				intent.putExtra(EventInfo.CHANGED, true);
@@ -175,14 +175,14 @@ public class EventDetailActivity extends Activity  implements OnItemLongClickLis
 		});
 		alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
-				// Cancel‚ªƒNƒŠƒbƒN‚³‚ê‚½‚ç‰½‚à‚µ‚È‚¢
+				// CancelãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰ä½•ã‚‚ã—ãªã„
 			}
 		});
-		// ƒ_ƒCƒAƒƒO‚ğƒLƒƒƒ“ƒZƒ‹‚Å‚«‚é‚æ‚¤‚É‚·‚é
+		// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
 		alertDialogBuilder.setCancelable(true);
-		// ƒ_ƒCƒAƒƒO‚ğ¶¬‚·‚é
+		// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’ç”Ÿæˆã™ã‚‹
 		AlertDialog alertDialog = alertDialogBuilder.create();
-		// ƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚Ì•\¦
+		// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãƒœãƒƒã‚¯ã‚¹ã®è¡¨ç¤º
 		alertDialog.show();
 		return true;
 	}

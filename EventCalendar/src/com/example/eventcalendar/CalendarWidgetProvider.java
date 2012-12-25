@@ -6,23 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 
 public class CalendarWidgetProvider extends AppWidgetProvider {
-	// Widget‚ğXV‚·‚é‚½‚ß‚ÌACTION‚Ì’è‹`
+	// Widgetï¿½ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½é‚½ï¿½ß‚ï¿½ACTIONï¿½Ì’ï¿½`
 	public static final Object ACTION_UPDATE_WIDGET = "com.example.eventcalendar.update_widget";
 
 	public void onEnabled(Context context){
-		// ‰æ–Ê‚É•\¦‚³‚ê‚½‚Æ‚«
+		// ï¿½ï¿½Ê‚É•\ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½Æ‚ï¿½
 		super.onEnabled(context);
 		updateEvents(context);
 	}
 
 	public void onUdate(Context context, AppWidgetManager manager, int[] ids){
-		// XVƒCƒxƒ“ƒg‚ª—ˆ‚½‚Æ‚«
+		// ï¿½Xï¿½Vï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½
 		super.onUpdate(context, manager, ids);
 		updateEvents(context);
 	}
 
 	public void onReceive(Context context,Intent intent){
-		// ƒCƒ“ƒeƒ“ƒg‚ğóM‚µ‚½‚Æ‚«
+		// ï¿½Cï¿½ï¿½ï¿½eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½Mï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½
 		super.onReceive(context,intent);
 		String action = intent.getAction();
 		if(action!=null && action.equals(ACTION_UPDATE_WIDGET)){
@@ -31,11 +31,11 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 	}
 
 	/**
-	 * ƒCƒxƒ“ƒgî•ñ‚ÌXV
+	 * ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ÌXï¿½V
 	 * @param Context
 	 */
 	public void updateEvents(Context context){
-		// WidgetService@‚ğ‹N“®‚·‚é
+		// WidgetServiceï¿½@ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Intent intent = new Intent(context,WidgetService.class);
 		context.startService(intent);
 	}

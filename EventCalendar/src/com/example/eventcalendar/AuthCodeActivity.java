@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * ƒ{ƒ^ƒ“‚ÌƒNƒŠƒbƒNˆ—‚ğs‚¤‚½‚ß‚É
- * OnClickListener‚ğƒCƒ“ƒvƒŠƒƒ“ƒg‚·‚éB
+ * ãƒœã‚¿ãƒ³ã®ã‚¯ãƒªãƒƒã‚¯å‡¦ç†ã‚’è¡Œã†ãŸã‚ã«
+ * OnClickListenerã‚’ã‚¤ãƒ³ãƒ—ãƒªãƒ¡ãƒ³ãƒˆã™ã‚‹ã€‚
  */
 public class AuthCodeActivity extends Activity implements OnClickListener {
 	private EditText mAuthCode = null;
@@ -24,22 +24,22 @@ public class AuthCodeActivity extends Activity implements OnClickListener {
 		mAuthCode = (EditText)findViewById(R.id.authCode);
 		mSaveCode = (Button)findViewById(R.id.saveCode);
 		mDiscardCode = (Button)findViewById(R.id.discardCode);
-		// ƒ{ƒ^ƒ“‚ÉAuthCodeActivity‚ğListener‚Æ‚µ‚Ä“o˜^‚·‚éB
+		// ãƒœã‚¿ãƒ³ã«AuthCodeActivityã‚’Listenerã¨ã—ã¦ç™»éŒ²ã™ã‚‹ã€‚
 		mSaveCode.setOnClickListener(this);
 		mDiscardCode.setOnClickListener(this);
 	}
 
 	/**
-	 * ƒ{ƒ^ƒ“‚ğƒNƒŠƒbƒN‚µ‚½‚Æ‚«‚Ìˆ—
-	 * @param View ƒNƒŠƒbƒN‚³‚ê‚½ƒrƒ…[
+	 * ãƒœã‚¿ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸã¨ãã®å‡¦ç†
+	 * @param View ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸãƒ“ãƒ¥ãƒ¼
 	 */
 	public void onClick(View v) {
 		Intent intent = new Intent();
 		if(v == mDiscardCode){
-			// ”jŠü‚ğƒNƒŠƒbƒN‚³‚ê‚½‚çRESULT_CANCELED‚ğ•Ô‚µ‚ÄI—¹
+			// ç ´æ£„ã‚’ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰RESULT_CANCELEDã‚’è¿”ã—ã¦çµ‚äº†
 			setResult(RESULT_CANCELED,intent);
 		}else if(v == mSaveCode){
-			// save‚ªƒNƒŠƒbƒN‚³‚ê‚½‚çresultIntent‚ÉAuthCode‚Ì•¶š—ñ‚ğƒZƒbƒg
+			// saveãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰resultIntentã«AuthCodeã®æ–‡å­—åˆ—ã‚’ã‚»ãƒƒãƒˆ
 			intent.putExtra(EventCalendarActivity.AUTH_CODE,
 					mAuthCode.getText().toString());
 			setResult(RESULT_OK,intent);

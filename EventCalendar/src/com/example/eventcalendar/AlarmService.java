@@ -12,28 +12,28 @@ public class AlarmService extends Service {
   private MediaPlayer mPlayer = null;
   @Override
   public void onCreate(){
-// ƒoƒCƒuƒŒ[ƒ^‚ğƒVƒXƒeƒ€ƒT[ƒrƒX‚©‚çæ“¾‚·‚é
+// ãƒã‚¤ãƒ–ãƒ¬ãƒ¼ã‚¿ã‚’ã‚·ã‚¹ãƒ†ãƒ ã‚µãƒ¼ãƒ“ã‚¹ã‹ã‚‰å–å¾—ã™ã‚‹
     mVibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-// ‰¹ºƒŠƒ\[ƒX‚ğw’è‚µ‚ÄMediaPlayer‚ğì¬‚·‚é
+// éŸ³å£°ãƒªã‚½ãƒ¼ã‚¹ã‚’æŒ‡å®šã—ã¦MediaPlayerã‚’ä½œæˆã™ã‚‹
     mPlayer  = MediaPlayer.create(this, R.raw.alarm);
-// ‰¹‚Íƒ‹[ƒv‚·‚é‚æ‚¤‚Éİ’è‚·‚éB
+// éŸ³ã¯ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‚ˆã†ã«è¨­å®šã™ã‚‹ã€‚
     mPlayer.setLooping(true);
   }
   @Override
   public void onStart(Intent intent,int startID){
-// ƒoƒCƒuƒŒ[ƒ^‚Ìƒpƒ^[ƒ“
-// U“®‚·‚éŠÔA~‚Ü‚Á‚Ä‚¢‚éŠÔ‚ğŒğŒİ‚Éƒ~ƒŠ•b‚Åw’è
-// ˆÈ‰º‚Ì—á‚Å‚ÍA1•bU“®‚µ‚ÄA2•b’â~‚ğ5‰ñŒJ‚è•Ô‚·
+// ãƒã‚¤ãƒ–ãƒ¬ãƒ¼ã‚¿ã®ãƒ‘ã‚¿ãƒ¼ãƒ³
+// æŒ¯å‹•ã™ã‚‹æ™‚é–“ã€æ­¢ã¾ã£ã¦ã„ã‚‹æ™‚é–“ã‚’äº¤äº’ã«ãƒŸãƒªç§’ã§æŒ‡å®š
+// ä»¥ä¸‹ã®ä¾‹ã§ã¯ã€1ç§’æŒ¯å‹•ã—ã¦ã€2ç§’åœæ­¢ã‚’5å›ç¹°ã‚Šè¿”ã™
     long[] pattern = {1000,2000,1000,2000,1000,2000,1000,2000,1000,2000};
-// ƒoƒCƒuƒŒ[ƒ^‚ğÀs
+// ãƒã‚¤ãƒ–ãƒ¬ãƒ¼ã‚¿ã‚’å®Ÿè¡Œ
     mVibrator.vibrate(pattern,-1);
-// ‰¹º‚ÌÄ¶‚ğŠJn
+// éŸ³å£°ã®å†ç”Ÿã‚’é–‹å§‹
     mPlayer.seekTo(0);
     mPlayer.start();
   }
   @Override
   public void onDestroy(){
-// I—¹‚·‚é‚Æ‚«‚Í‰¹º‚ğ’â~‚µAMediaPlayer ‚ğƒŠƒŠ[ƒX
+// çµ‚äº†ã™ã‚‹ã¨ãã¯éŸ³å£°ã‚’åœæ­¢ã—ã€MediaPlayer ã‚’ãƒªãƒªãƒ¼ã‚¹
     mPlayer.stop();
     mPlayer.release();
   }

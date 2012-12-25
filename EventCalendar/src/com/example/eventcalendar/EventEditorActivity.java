@@ -26,11 +26,11 @@ import android.widget.TimePicker;
 
 /**
  * EventEditorActivity
- * ƒCƒxƒ“ƒg‚Ìî•ñ‚ğC³‚·‚é‚½‚ß‚Ì‰æ–Ê
- * ƒ{ƒ^ƒ“‚Ìˆ—‚ğ‚·‚é‚½‚ß‚ÉuonCliciListenerv‚ğƒCƒ“ƒvƒŠƒƒ“ƒg‚·‚é
+ * ã‚¤ãƒ™ãƒ³ãƒˆã®æƒ…å ±ã‚’ä¿®æ­£ã™ã‚‹ãŸã‚ã®ç”»é¢
+ * ãƒœã‚¿ãƒ³ã®å‡¦ç†ã‚’ã™ã‚‹ãŸã‚ã«ã€ŒonCliciListenerã€ã‚’ã‚¤ãƒ³ãƒ—ãƒªãƒ¡ãƒ³ãƒˆã™ã‚‹
  */
 public class EventEditorActivity extends Activity implements OnClickListener {
-	// View‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// Viewã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private EditText mTitleEditText = null;
 	private EditText mWhereEditText = null;
 	private EditText mContentEditText = null;
@@ -41,20 +41,20 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 	private Button mDiscardButton = null;
 	private Button mSaveButton = null;
 	private CheckBox mAllDayCheckBox = null;
-	// Intent‚Å‚à‚ç‚Á‚½ƒf[ƒ^ƒx[ƒXID
+	// Intentã§ã‚‚ã‚‰ã£ãŸãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ID
 	private long mId = 0;
-	// “ú•t‚Ì•¶š—ñ
+	// æ—¥ä»˜ã®æ–‡å­—åˆ—
 	private String mDateString = null;  
 
 	/**
 	 * onCreate
-	 * ID‚ª‚O‚È‚çV‹KA‚PˆÈã‚È‚çƒf[ƒ^ƒx[ƒX‚©‚çî•ñ‚ğæ“¾‚µŠiƒtƒB[ƒ‹ƒh‚ÉƒZƒbƒg‚·‚é
+	 * IDãŒï¼ãªã‚‰æ–°è¦ã€ï¼‘ä»¥ä¸Šãªã‚‰ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰æƒ…å ±ã‚’å–å¾—ã—æ ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã«ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// ƒŠƒ\[ƒX‚©‚çView‚ğì¬‚·‚é
+		// ãƒªã‚½ãƒ¼ã‚¹ã‹ã‚‰Viewã‚’ä½œæˆã™ã‚‹
 		setContentView(R.layout.eventeditor);
-		// TextEdit‚È‚Ç‚Ìƒrƒ…[‚ğæ“¾‚·‚é
+		// TextEditãªã©ã®ãƒ“ãƒ¥ãƒ¼ã‚’å–å¾—ã™ã‚‹
 		mTitleEditText = (EditText)findViewById(R.id.title);
 		mWhereEditText = (EditText)findViewById(R.id.where);
 		mContentEditText = (EditText)findViewById(R.id.content);
@@ -66,32 +66,32 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 		mSaveButton = (Button)findViewById(R.id.save);
 		mAllDayCheckBox = (CheckBox)findViewById(R.id.allDay);
 
-		// uOnClickListenerv‚ÉuEventEditorActivityv‚ğƒZƒbƒg‚·‚é
+		// ã€ŒOnClickListenerã€ã«ã€ŒEventEditorActivityã€ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 		mDiscardButton.setOnClickListener(this);
 		mSaveButton.setOnClickListener(this);
 		Intent intent = getIntent();
-		// ƒCƒ“ƒeƒ“ƒg‚ÌExtra‚©‚çƒf[ƒ^‚ÌID‚ğæ“¾‚·‚é
+		// ã‚¤ãƒ³ãƒ†ãƒ³ãƒˆã®Extraã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã®IDã‚’å–å¾—ã™ã‚‹
 		mId  = intent.getLongExtra(EventInfo.ID,0);
-		// ƒCƒ“ƒeƒ“ƒg‚ÌExtra‚©‚ç“ú•t‚ğæ“¾‚·‚é
+		// ã‚¤ãƒ³ãƒ†ãƒ³ãƒˆã®Extraã‹ã‚‰æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
 		mDateString = intent.getStringExtra("date");
 		if(mId==0){
-			// ƒ^ƒbƒv‚µ‚½“ú•t‚Å¡‚Ì‚©‚ç‚Ì—\’è‚Æ‚µ‚Äƒf[ƒ^‚ğì¬‚·‚é
-			//@ˆø”‚Å‚à‚ç‚Á‚½“ú•t‚ğƒJƒŒƒ“ƒ_[‚É•ÏŠ·
+			// ã‚¿ãƒƒãƒ—ã—ãŸæ—¥ä»˜ã§ä»Šã®æ™‚åˆ»ã‹ã‚‰ã®äºˆå®šã¨ã—ã¦ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹
+			//ã€€å¼•æ•°ã§ã‚‚ã‚‰ã£ãŸæ—¥ä»˜ã‚’ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã«å¤‰æ›
 			Calendar targetCal = DateStrCls.toCalendar(mDateString);
-			// ¡‚Ì‚ğæ“¾
+			// ä»Šã®æ™‚åˆ»ã‚’å–å¾—
 			Calendar nowCal = new GregorianCalendar();
-			// ŠJn“ú‚Íƒ^ƒbƒv‚µ‚½“ú•t
+			// é–‹å§‹æ—¥ã¯ã‚¿ãƒƒãƒ—ã—ãŸæ—¥ä»˜
 			mStartDateTextView.setText(DateStrCls.dateFormat.format(targetCal.getTime()));
-			// ŠJn‚Í¡”T
+			// é–‹å§‹æ™‚åˆ»ã¯ä»Šä¹ƒæ™‚åˆ»
 			mStartTimeTextView.setText(DateStrCls.timeFormat.format(nowCal.getTime()));
-			// ‚ğ‚PŠÔ‰ÁZ
+			// æ™‚åˆ»ã‚’ï¼‘æ™‚é–“åŠ ç®—
 			nowCal.add(Calendar.HOUR, 1);
-			// I—¹“ú‚ÍŠJn“ú‚Æ“¯‚¶
+			// çµ‚äº†æ—¥ã¯é–‹å§‹æ—¥ã¨åŒã˜
 			mEndDateTextView.setText(DateStrCls.dateFormat.format(targetCal.getTime()));
-			//@I—¹‚ÍŠJn‚©‚ç‚PŠÔŒã
+			//ã€€çµ‚äº†æ™‚åˆ»ã¯é–‹å§‹ã‹ã‚‰ï¼‘æ™‚é–“å¾Œ
 			mEndTimeTextView.setText(DateStrCls.timeFormat.format(nowCal.getTime()));
 		}else{
-			// ƒf[ƒ^ƒx[ƒX‚©‚çƒf[ƒ^‚ğæ“¾‚µAƒf[ƒ^‚Ì“à—e‚ğ•ÒWƒGƒŠƒA‚Éİ’è‚·‚é
+			// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—ã—ã€ãƒ‡ãƒ¼ã‚¿ã®å†…å®¹ã‚’ç·¨é›†ã‚¨ãƒªã‚¢ã«è¨­å®šã™ã‚‹
 			ContentResolver contentResolver = getContentResolver();
 			String selection = EventInfo.ID+" = "+mId;
 			Cursor c = contentResolver.query(EventCalendarActivity.RESOLVER_URI, null, selection, null, null);
@@ -112,8 +112,8 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 						startCal.get(Calendar.MINUTE) == 0){
 					startCal.add(Calendar.DAY_OF_MONTH, 1);
 					if(startCal.equals(endCal)){
-						// ŠJn‚ª00:00‚ÅI—¹‚ª—‚“ú‚Ì00:00‚Ìê‡
-						// I“ú‚Ì—\’è‚Æ”»’f‚·‚é
+						// é–‹å§‹æ™‚åˆ»ãŒ00:00ã§çµ‚äº†ãŒç¿Œæ—¥ã®00:00ã®å ´åˆ
+						// çµ‚æ—¥ã®äºˆå®šã¨åˆ¤æ–­ã™ã‚‹
 						mStartTimeTextView.setVisibility(View.INVISIBLE);
 						mEndDateTextView.setVisibility(View.INVISIBLE);
 						mEndTimeTextView.setVisibility(View.INVISIBLE);
@@ -123,26 +123,26 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			}
 			c.close();
 		}
-		// “ú‚Ì•ÒW—p‚ÌƒŠƒXƒi[‚ğ“ú‚ÌƒeƒLƒXƒg‚ÉƒZƒbƒg
+		// æ—¥æ™‚ã®ç·¨é›†ç”¨ã®ãƒªã‚¹ãƒŠãƒ¼ã‚’æ—¥æ™‚ã®ãƒ†ã‚­ã‚¹ãƒˆã«ã‚»ãƒƒãƒˆ
 		mStartDateTextView.setOnClickListener(new DateOnClickListener(this));
 		mEndDateTextView.setOnClickListener(new DateOnClickListener(this));
 		mStartTimeTextView.setOnClickListener(new TimeOnClickListener(this));
 		mEndTimeTextView.setOnClickListener(new TimeOnClickListener(this));
-		// AllDayƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚ÉƒŠƒXƒi[‚ğƒZƒbƒg
+		// AllDayãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã«ãƒªã‚¹ãƒŠãƒ¼ã‚’ã‚»ãƒƒãƒˆ
 		mAllDayCheckBox.setOnClickListener(new AllDayOnClickListener());
 	}
 
 	/**
 	 * onClick
-	 *  ƒ{ƒ^ƒ“‚Ì‚Ç‚ê‚©‚ªƒ^ƒbƒv‚³‚ê‚½‚Æ‚«‚Ìˆ—
+	 *  ãƒœã‚¿ãƒ³ã®ã©ã‚Œã‹ãŒã‚¿ãƒƒãƒ—ã•ã‚ŒãŸã¨ãã®å‡¦ç†
 	 */
 	public void onClick(View v) {
 		if(v == mDiscardButton){
-			// Discardƒ{ƒ^ƒ“‚ªƒ^ƒbƒv‚³‚ê‚½‚ç‰½‚à‚¹‚¸ƒAƒNƒeƒBƒrƒeƒB‚ğI—¹‚·‚é
+			// Discardãƒœã‚¿ãƒ³ãŒã‚¿ãƒƒãƒ—ã•ã‚ŒãŸã‚‰ä½•ã‚‚ã›ãšã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ã‚’çµ‚äº†ã™ã‚‹
 			Log.d("CALENDAR","Discard");
 			finish();
 		}else if(v == mSaveButton){
-			// Saveƒ{ƒ^ƒ“‚ªƒ^ƒbƒv‚³‚ê‚½‚ç•ÒW’†‚Ìƒf[ƒ^‚ğƒf[ƒ^ƒx[ƒX‚É•Û‘¶‚·‚é
+			// Saveãƒœã‚¿ãƒ³ãŒã‚¿ãƒƒãƒ—ã•ã‚ŒãŸã‚‰ç·¨é›†ä¸­ã®ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ä¿å­˜ã™ã‚‹
 			ContentResolver contentResolver = getContentResolver();
 			ContentValues values = new ContentValues();
 			values.put(EventInfo.TITLE, mTitleEditText.getText().toString());
@@ -152,7 +152,7 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			values.put(EventInfo.MODIFIED, 1);
 			values.put(EventInfo.DELETED,0);
 			if(mAllDayCheckBox.isChecked()){
-				// I“ú‚ªİ’è‚³‚ê‚Ä‚¢‚½‚ç@I—¹“ú‚Í—‚“úA‚Í‚Æ‚à‚É00:00‚É‚·‚é
+				// çµ‚æ—¥ãŒè¨­å®šã•ã‚Œã¦ã„ãŸã‚‰ã€€çµ‚äº†æ—¥ã¯ç¿Œæ—¥ã€æ™‚åˆ»ã¯ã¨ã‚‚ã«00:00ã«ã™ã‚‹
 				GregorianCalendar c = DateStrCls.toCalendar(
 						DateStrCls.toDBDateString(
 								mStartDateTextView.getText().toString(),
@@ -169,51 +169,51 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 						mEndTimeTextView.getText().toString()));
 			}
 			if(mId == 0){
-				//@ID‚ª‚O‚È‚çV‹K‚È‚Ì‚ÅInsert
+				//ã€€IDãŒï¼ãªã‚‰æ–°è¦ãªã®ã§Insert
 				contentResolver.insert(EventCalendarActivity.RESOLVER_URI, values);
 				Log.d("CALENDAR","Insert:"+mId);
 			}else{
-				// ID‚ª‚PˆÈã‚È‚çXV‚È‚Ì‚ÅUpdate
+				// IDãŒï¼‘ä»¥ä¸Šãªã‚‰æ›´æ–°ãªã®ã§Update
 				String where = EventInfo.ID+" = "+mId;
 				contentResolver.update(EventCalendarActivity.RESOLVER_URI, values, where, null);
 				Log.d("CALENDAR","Update: "+mId);
 			}
-			// ŒÄ‚Ño‚µ‚à‚Æ‚É’l‚ğ•Ô‚·‚½‚ß‚ÌIntent‚ğì¬
+			// å‘¼ã³å‡ºã—ã‚‚ã¨ã«å€¤ã‚’è¿”ã™ãŸã‚ã®Intentã‚’ä½œæˆ
 			Intent intent = new Intent();
-			// Extra‚É’l‚ğƒZƒbƒg
+			// Extraã«å€¤ã‚’ã‚»ãƒƒãƒˆ
 			intent.putExtra(EventCalendarActivity.CHANGED,true);
-			// ˆ—Œ‹‰Ê‚ğƒZƒbƒg
+			// å‡¦ç†çµæœã‚’ã‚»ãƒƒãƒˆ
 			setResult(RESULT_OK,intent);
 
-			// •Û‘¶‚ªŠ®—¹‚µ‚½‚çƒAƒNƒeƒBƒrƒeƒB‚ğI—¹‚·‚é
+			// ä¿å­˜ãŒå®Œäº†ã—ãŸã‚‰ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ã‚’çµ‚äº†ã™ã‚‹
 			finish();
 		}
 	}
 	
 	/**
 	 * DateOnClickListener
-	 *  “ú•t‚Ì•¶š—ñ‚ÉƒZƒbƒg‚³‚ê‚éƒŠƒXƒi[
+	 *  æ—¥ä»˜ã®æ–‡å­—åˆ—ã«ã‚»ãƒƒãƒˆã•ã‚Œã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	private class DateOnClickListener implements OnClickListener{
 		private Context mContext = null;
 		public DateOnClickListener(Context c){
-			// Context‚ª•K—v‚È‚Ì‚ÅAƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å“n‚µ‚ÄŠo‚¦‚Ä‚¨‚­
+			// ContextãŒå¿…è¦ãªã®ã§ã€ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§æ¸¡ã—ã¦è¦šãˆã¦ãŠã
 			mContext = c;
 		}
 		/**
-		 * ƒNƒŠƒbƒN‚³‚ê‚½ŒÄ‚Ño‚³‚ê‚é
-		 * @param View ƒNƒŠƒbƒN‚³‚ê‚½ƒrƒ…[
+		 * ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸæ™‚å‘¼ã³å‡ºã•ã‚Œã‚‹
+		 * @param View ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸãƒ“ãƒ¥ãƒ¼
 		 */
 		public void onClick(View v) {
 			GregorianCalendar c = null;
 			if(v == mStartDateTextView){
-				//@ŠJn“ú‚ÅƒNƒŠƒbƒN‚³‚ê‚½ê‡
+				//ã€€é–‹å§‹æ—¥ã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå ´åˆ
 				c = DateStrCls.toCalendar(
 						DateStrCls.toDBDateString(
 								mStartDateTextView.getText().toString(),
 								mStartTimeTextView.getText().toString()));
 			}else if(v == mEndDateTextView){
-				// I—¹“ú‚ÅƒNƒŠƒbƒN‚³‚ê‚½ê‡
+				// çµ‚äº†æ—¥ã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå ´åˆ
 				c = DateStrCls.toCalendar(
 						DateStrCls.toDBDateString(
 								mEndDateTextView.getText().toString(),
@@ -221,7 +221,7 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			}else{
 				return;
 			}
-			// DatePickerDialog‚ğì¬‚µ•\¦‚·‚é
+			// DatePickerDialogã‚’ä½œæˆã—è¡¨ç¤ºã™ã‚‹
 			DatePickerDialog datePickerDialog = new DatePickerDialog(
 					mContext,
 					new DateSetListener(v),
@@ -233,26 +233,26 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 	}
 	/**
 	 * DateSetListener
-	 *  DatePickerDialog‚ÉƒZƒbƒg‚·‚éAİ’è‚ÉŒÄ‚Ño‚³‚ê‚éƒŠƒXƒi[
+	 *  DatePickerDialogã«ã‚»ãƒƒãƒˆã™ã‚‹ã€è¨­å®šæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	private class DateSetListener implements OnDateSetListener{
 		private View mView = null;
 		public DateSetListener(View v){
-			// ‚Ç‚Ìƒrƒ…[‚ğƒNƒŠƒbƒN‚³‚ê‚Ä‚¢ŠJ‚©‚ê‚½ƒ_ƒCƒAƒƒO‚©‚ğŠo‚¦‚Ä‚¨‚­‚½‚ß‚É
-			// ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÅView‚ğ•Û‚µ‚Ä‚¨‚­
+			// ã©ã®ãƒ“ãƒ¥ãƒ¼ã‚’ã‚¯ãƒªãƒƒã‚¯ã•ã‚Œã¦ã„é–‹ã‹ã‚ŒãŸãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‹ã‚’è¦šãˆã¦ãŠããŸã‚ã«
+			// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§Viewã‚’ä¿æŒã—ã¦ãŠã
 			mView = v;
 		}
 		/**
-		 * DatePickerDialog‚Åİ’è‚ª‰Ÿ‚³‚ê‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚éƒƒ\ƒbƒh
+		 * DatePickerDialogã§è¨­å®šãŒæŠ¼ã•ã‚ŒãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
 		 * 
-		 * @param int y ”N
-		 * @param int m Œ
-		 * @param int d “ú
+		 * @param int y å¹´
+		 * @param int m æœˆ
+		 * @param int d æ—¥
 		 */
 		public void onDateSet(DatePicker picker, int y, int m, int d) {
 			GregorianCalendar c = new GregorianCalendar();
 			c.set(y,m,d);
-			// ˆø”‚Å“n‚³‚ê‚½”NŒ“ú‚ğŠY“–‚·‚éView‚ÉƒZƒbƒg‚·‚é
+			// å¼•æ•°ã§æ¸¡ã•ã‚ŒãŸå¹´æœˆæ—¥ã‚’è©²å½“ã™ã‚‹Viewã«ã‚»ãƒƒãƒˆã™ã‚‹
 			if(mView == mStartDateTextView){
 				mStartDateTextView.setText(DateStrCls.dateFormat.format(c.getTime()));
 			}else if(mView == mEndDateTextView){
@@ -263,29 +263,29 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 
 	/**
 	 * TimeOnClickListener
-	 *  ‚Ì•¶š—ñ‚ÉƒZƒbƒg‚³‚ê‚éƒŠƒXƒi[
+	 *  æ™‚åˆ»ã®æ–‡å­—åˆ—ã«ã‚»ãƒƒãƒˆã•ã‚Œã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	private class TimeOnClickListener implements OnClickListener{
 		private Context mContext = null;
 		public TimeOnClickListener(Context c){
-			// Context‚ª•K—v‚È‚Ì‚ÅAƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å“n‚µ‚ÄŠo‚¦‚Ä‚¨‚­
+			// ContextãŒå¿…è¦ãªã®ã§ã€ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§æ¸¡ã—ã¦è¦šãˆã¦ãŠã
 			mContext = c;
 		}
 
 		/**
-		 * ƒNƒŠƒbƒN‚³‚ê‚½ŒÄ‚Ño‚³‚ê‚é
-		 * @param View ƒNƒŠƒbƒN‚³‚ê‚½ƒrƒ…[
+		 * ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸæ™‚å‘¼ã³å‡ºã•ã‚Œã‚‹
+		 * @param View ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸãƒ“ãƒ¥ãƒ¼
 		 */
 		public void onClick(View v) {
 			GregorianCalendar c = null;
 			if(v == mStartTimeTextView){
-				//@ŠJn‚ÅƒNƒŠƒbƒN‚³‚ê‚½ê‡
+				//ã€€é–‹å§‹æ™‚åˆ»ã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå ´åˆ
 				c = DateStrCls.toCalendar(
 						DateStrCls.toDBDateString(
 								mStartDateTextView.getText().toString(),
 								mStartTimeTextView.getText().toString()));
 			}else if(v == mEndTimeTextView){
-				//@I—¹‚ÅƒNƒŠƒbƒN‚³‚ê‚½ê‡
+				//ã€€çµ‚äº†æ™‚åˆ»ã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå ´åˆ
 				c = DateStrCls.toCalendar(
 						DateStrCls.toDBDateString(
 								mEndDateTextView.getText().toString(),
@@ -293,7 +293,7 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 			}else{
 				return;
 			}
-			// TimePickerDialog‚ğì¬‚µ•\¦‚·‚é
+			// TimePickerDialogã‚’ä½œæˆã—è¡¨ç¤ºã™ã‚‹
 			TimePickerDialog timePickerDialog = new TimePickerDialog(
 					mContext,
 					new TimeSetListener(v),
@@ -305,27 +305,27 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 
 	/**
 	 * TimeSetListener
-	 *  TimePickerDialog‚ÉƒZƒbƒg‚·‚éAİ’è‚ÉŒÄ‚Ño‚³‚ê‚éƒŠƒXƒi[
+	 *  TimePickerDialogã«ã‚»ãƒƒãƒˆã™ã‚‹ã€è¨­å®šæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	private class TimeSetListener implements OnTimeSetListener{
 		private View mView = null;
 		public TimeSetListener(View v){
-			// ‚Ç‚Ìƒrƒ…[‚ğƒNƒŠƒbƒN‚³‚ê‚ÄŠJ‚©‚ê‚½ƒ_ƒCƒAƒƒO‚©‚ğŠo‚¦‚Ä‚¨‚­‚½‚ß‚É
-			// ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÅView‚ğ•Û‚µ‚Ä‚¨‚­
+			// ã©ã®ãƒ“ãƒ¥ãƒ¼ã‚’ã‚¯ãƒªãƒƒã‚¯ã•ã‚Œã¦é–‹ã‹ã‚ŒãŸãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‹ã‚’è¦šãˆã¦ãŠããŸã‚ã«
+			// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§Viewã‚’ä¿æŒã—ã¦ãŠã
 			mView = v;
 		}
 
 		/**
-		 * TimePickerDialog‚Åİ’è‚ª‰Ÿ‚³‚ê‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚éƒƒ\ƒbƒh
+		 * TimePickerDialogã§è¨­å®šãŒæŠ¼ã•ã‚ŒãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
 		 * 
-		 * @param int h 
-		 * @param int m •ª
+		 * @param int h æ™‚
+		 * @param int m åˆ†
 		 */
 		public void onTimeSet(TimePicker picker, int h, int m) {
 			GregorianCalendar c = new GregorianCalendar();
 			c.set(Calendar.HOUR_OF_DAY,h);
 			c.set(Calendar.MINUTE,m);
-			// ˆø”‚Å“n‚³‚ê‚½”NŒ“ú‚ğŠY“–‚·‚éView‚ÉƒZƒbƒg‚·‚é
+			// å¼•æ•°ã§æ¸¡ã•ã‚ŒãŸå¹´æœˆæ—¥ã‚’è©²å½“ã™ã‚‹Viewã«ã‚»ãƒƒãƒˆã™ã‚‹
 			if(mView == mStartTimeTextView){
 				mStartTimeTextView.setText(DateStrCls.timeFormat.format(c.getTime()));
 			}else if(mView == mEndTimeTextView){
@@ -334,22 +334,22 @@ public class EventEditorActivity extends Activity implements OnClickListener {
 		}
 	}
 	/**
-	 * AllDayƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚ÌƒŠƒXƒi[
+	 * AllDayãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã®ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	private class AllDayOnClickListener implements OnClickListener{
 		/**
-		 * AllDayƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚ğƒNƒŠƒbƒN‚³‚ê‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚é
+		 * AllDayãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã‚’ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹
 		 */
 		public void onClick(View v) {
 			if(((CheckBox)v).isChecked()){
-				// AllDay ON‚Ì
-				// ŠJn“úˆÈŠO‚ÌƒeƒLƒXƒg‚ğ‰B‚·
+				// AllDay ONã®æ™‚
+				// é–‹å§‹æ—¥ä»¥å¤–ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’éš ã™
 				mStartTimeTextView.setVisibility(View.INVISIBLE);
 				mEndDateTextView.setVisibility(View.INVISIBLE);
 				mEndTimeTextView.setVisibility(View.INVISIBLE);
 			}else{
-				// AllDay OFF‚Ì
-				// ŠJn“úˆÈŠO‚ÌƒeƒLƒXƒg‚à•\¦‚·‚é
+				// AllDay OFFã®æ™‚
+				// é–‹å§‹æ—¥ä»¥å¤–ã®ãƒ†ã‚­ã‚¹ãƒˆã‚‚è¡¨ç¤ºã™ã‚‹
 				mStartTimeTextView.setVisibility(View.VISIBLE);
 				mEndDateTextView.setVisibility(View.VISIBLE);
 				mEndTimeTextView.setVisibility(View.VISIBLE);

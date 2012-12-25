@@ -3,12 +3,17 @@ package com.example.eventcalendar;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -17,6 +22,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -47,134 +53,134 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 public class EventCalendarActivity extends Activity implements OnClickListener{
-	// ˆêTŠÔ‚Ì“ú”
+	// ä¸€é€±é–“ã®æ—¥æ•°
 	private static final int DAYS_OF_WEEK = 7;
-	// GridView‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// GridViewã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private GridView mGridView = null;
-	// DateCellAdapter‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// DateCellAdapterã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private DateCellAdapter mDateCellAdapter = null;
-	// Œ»İ’–Ú‚µ‚Ä‚¢‚é”NŒ“ú‚ğ•Û‚·‚é•Ï”
+	// ç¾åœ¨æ³¨ç›®ã—ã¦ã„ã‚‹å¹´æœˆæ—¥ã‚’ä¿æŒã™ã‚‹å¤‰æ•°
 	private GregorianCalendar mCalendar = null;
-	// ƒJƒŒƒ“ƒ_[‚Ì”NŒ‚ğ•\¦‚·‚éTextView
+	// ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®å¹´æœˆã‚’è¡¨ç¤ºã™ã‚‹TextView
 	private TextView mYearMonthTextView = null;
-	// ContentResolver‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// ContentResolverã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private ContentResolver mContentResolver = null;
-	// EventProvider‚ÌUri
+	// EventProviderã®Uri
 	public static final Uri RESOLVER_URI = Uri.parse("content://com.example.eventcalendar.eventprovider");
-	// EventDetailActivity‚ğŒÄ‚Ño‚·‚½‚ß‚ÌrequestƒR[ƒh
+	// EventDetailActivityã‚’å‘¼ã³å‡ºã™ãŸã‚ã®requestã‚³ãƒ¼ãƒ‰
 	protected static final int EVENT_DETAIL = 2;
-	// ‘OŒƒ{ƒ^ƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// å‰æœˆãƒœã‚¿ãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private Button mPrevMonthButton = null;
-	// ŸŒƒ{ƒ^ƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// æ¬¡æœˆãƒœã‚¿ãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private Button mNextMonthButton = null;
-	// Activity‚Åƒf[ƒ^ƒx[ƒX‚ªXV‚³‚ê‚½‚±‚Æ‚ğ“`‚¦‚é‚½‚ß‚Ìƒ^ƒO
+	// Activityã§ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ãŒæ›´æ–°ã•ã‚ŒãŸã“ã¨ã‚’ä¼ãˆã‚‹ãŸã‚ã®ã‚¿ã‚°
 	public static final String CHANGED = "changed";
-	// ‘O‰ñXV“ú‚Ìˆ×‚Ìƒ^ƒO
+	// å‰å›æ›´æ–°æ—¥æ™‚ã®ç‚ºã®ã‚¿ã‚°
 	public static final String LAST_UPDATE = "LastUpdate";
-	// ¡‰ñ‚ÌXVŠJn“ú
+	// ä»Šå›ã®æ›´æ–°é–‹å§‹æ—¥æ™‚
 	private String mUpdateStartTime = null;
-	// ‘O‰ñXV“ú
+	// å‰å›æ›´æ–°æ—¥æ™‚
 	private String mLastUpdate = null;
 
-	// ”FØ—pƒg[ƒNƒ“‚ğ•Û‚·‚é•Ï”
+	// èªè¨¼ç”¨ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ä¿æŒã™ã‚‹å¤‰æ•°
 	private String mAccessToken;
 	private String mRefreshToken;
 	private long mAccessTokenExpire;
-	// AuthCode‚ğ•Û‚·‚é•Ï”
+	// AuthCodeã‚’ä¿æŒã™ã‚‹å¤‰æ•°
 	private String mAuthCode;
-	// ”FØ—pƒg[ƒNƒ“‚Ì–¼‘O
+	// èªè¨¼ç”¨ãƒˆãƒ¼ã‚¯ãƒ³ã®åå‰
 	private static final String AUTH_INFO = "authInfo";
 	private static final String ACCESS_TOKEN = "access_token";
 	private static final String REFRESH_TOKEN = "refresh_token";
 	private static final String EXPIRES_IN = "expires_in";
 	private static final String ACCESS_TOKEN_EXPIRE = "access_token_expire";
 
-	// ƒNƒ‰ƒCƒAƒ“ƒgƒV[ƒNƒŒƒbƒg@Google APIS‚©‚çæ“¾
-	public static final String CLIENT_SECRET = "1ET09oOy2CEezagy8lmOZdNe";
-	// OAUTH—pURL
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆã€€Google APISã‹ã‚‰å–å¾—
+	public static final String CLIENT_SECRET = "uo9qNI9mUYVN_DA9tYp31I_w";
+	// OAUTHç”¨URL
 	public static final String OAUTH_URL = "https://accounts.google.com/o/oauth2/auth";
-	// ƒNƒ‰ƒCƒAƒ“ƒgID@Google APIS‚©‚çæ“¾
-	public static final String CLIENT_ID = "155205884318.apps.googleusercontent.com";
-	// ƒŠƒ_ƒCƒŒƒNƒgURI@Google API‚©‚çæ“¾
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆIDã€€Google APISã‹ã‚‰å–å¾—
+	public static final String CLIENT_ID = "60552627438.apps.googleusercontent.com";
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆURIã€€Google APIã‹ã‚‰å–å¾—
 	public static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
-	// ƒJƒŒƒ“ƒ_[‚ÌƒXƒR[ƒv
+	// ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®ã‚¹ã‚³ãƒ¼ãƒ—
 	public static final String SCOPE = "https://www.google.com/calendar/feeds/";
-	//@ƒŒƒXƒ|ƒ“ƒXƒR[ƒh@ƒXƒ^ƒ“ƒhƒAƒƒ“ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚È‚Ì‚ÅAƒR[ƒh‚Åæ“¾‚·‚é
+	//ã€€ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚³ãƒ¼ãƒ‰ã€€ã‚¹ã‚¿ãƒ³ãƒ‰ã‚¢ãƒ­ãƒ³ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãªã®ã§ã€ã‚³ãƒ¼ãƒ‰ã§å–å¾—ã™ã‚‹
 	public static final String RESPONSE_CODE = "code";
-	// OAUTH‚Ég‚¤URI@
+	// OAUTHã«ä½¿ã†URIã€€
 	public static final Uri OAUTH_URI = Uri.parse(OAUTH_URL
 			+"?client_id="+CLIENT_ID
 			+"&redirect_uri="+REDIRECT_URI
 			+"&scope="+SCOPE
 			+"&response_type="+RESPONSE_CODE);
-	// onActivityResult‚Åg—p‚·‚éActivity‚ÌrequestƒR[ƒhiƒuƒ‰ƒEƒU‹N“®—pj
+	// onActivityResultã§ä½¿ç”¨ã™ã‚‹Activityã®requestã‚³ãƒ¼ãƒ‰ï¼ˆãƒ–ãƒ©ã‚¦ã‚¶èµ·å‹•ç”¨ï¼‰
 	public static final int BROWSER = 1;
-	// onActivityResult‚Åg—p‚·‚éActivity‚ÌrequestƒR[ƒhiAuthCode“ü—Í—pj
+	// onActivityResultã§ä½¿ç”¨ã™ã‚‹Activityã®requestã‚³ãƒ¼ãƒ‰ï¼ˆAuthCodeå…¥åŠ›ç”¨ï¼‰
 	public static final int AUTH_CODE_ACTIVITY = 3;
-	// AuthCode‚ğó‚¯æ‚éˆ×‚Ìƒ^ƒO
+	// AuthCodeã‚’å—ã‘å–ã‚‹ç‚ºã®ã‚¿ã‚°
 	public static final String AUTH_CODE = "AuthCode";
-
-	// Http’ÊM—p‚ÌƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	
+	// 
 	private CalendarHttpClient mCalendarHttpClient = new CalendarHttpClient();
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		mGridView = (GridView)findViewById(R.id.gridView1);
-		// GridƒJƒ‰ƒ€”‚ğİ’è‚·‚é
+		// Gridã‚«ãƒ©ãƒ æ•°ã‚’è¨­å®šã™ã‚‹
 		mGridView.setNumColumns(DAYS_OF_WEEK);
-		// DateCellAdapter‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚é
+		// DateCellAdapterã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã™ã‚‹
 		mDateCellAdapter = new DateCellAdapter(this);
-		// GridView‚ÉuDateCellAdapterv‚ğƒZƒbƒg
+		// GridViewã«ã€ŒDateCellAdapterã€ã‚’ã‚»ãƒƒãƒˆ
 		mGridView.setAdapter(mDateCellAdapter);
 		mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
-				// ƒJƒŒƒ“ƒ_[‚ğƒRƒs[
+				// ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚’ã‚³ãƒ”ãƒ¼
 				Calendar cal = (Calendar)mCalendar.clone();
-				// position‚©‚ç“ú•t‚ğŒvZ
+				// positionã‹ã‚‰æ—¥ä»˜ã‚’è¨ˆç®—
 				cal.set(Calendar.DAY_OF_MONTH, 1);
 				cal.add(Calendar.DAY_OF_MONTH, position-cal.get(Calendar.DAY_OF_WEEK)+1);
-				// “ú•t•¶š—ñ‚ğ¶¬
+				// æ—¥ä»˜æ–‡å­—åˆ—ã‚’ç”Ÿæˆ
 				String dateString = DateStrCls.dateFormat.format(cal.getTime());
-				// Intent  ‚ğì¬
+				// Intent  ã‚’ä½œæˆ
 				Intent intent = new Intent(EventCalendarActivity.this,EventDetailActivity.class);
-				// “ú•t‚ğExtra‚ÉƒZƒbƒg
+				// æ—¥ä»˜ã‚’Extraã«ã‚»ãƒƒãƒˆ
 				intent.putExtra("date", dateString);
-				// Activity‚ğÀs
+				// Activityã‚’å®Ÿè¡Œ
 				startActivityForResult(intent,EVENT_DETAIL);
 			}
 		});
 
 		mYearMonthTextView = (TextView)findViewById(R.id.yearMonth);
-		// uGregorianCalendarv‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Ìì¬
+		// ã€ŒGregorianCalendarã€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ä½œæˆ
 		mCalendar = new GregorianCalendar();
-		// ”NŒ‚Ìæ“¾
+		// å¹´æœˆã®å–å¾—
 		int year = mCalendar.get(Calendar.YEAR);
 		int month = mCalendar.get(Calendar.MONTH)+1;
-		// ”NŒ‚Ìƒrƒ…[‚Ö‚Ì•\¦
+		// å¹´æœˆã®ãƒ“ãƒ¥ãƒ¼ã¸ã®è¡¨ç¤º
 		mYearMonthTextView.setText(year+"/"+month);
-		// ContentResolver‚Ìæ“¾
+		// ContentResolverã®å–å¾—
 		mContentResolver = getContentResolver();
-		// ‘OŒƒ{ƒ^ƒ“‚ÉListener‚ğİ’è
+		// å‰æœˆãƒœã‚¿ãƒ³ã«Listenerã‚’è¨­å®š
 		mPrevMonthButton = (Button)findViewById(R.id.prevMonth);
 		mPrevMonthButton.setOnClickListener(this);
-		// ŸŒƒ{ƒ^ƒ“‚ÉListener‚ğİ’è
+		// æ¬¡æœˆãƒœã‚¿ãƒ³ã«Listenerã‚’è¨­å®š
 		mNextMonthButton = (Button)findViewById(R.id.nextMonth);
 		mNextMonthButton.setOnClickListener(this);
 	}
 
 	/**
 	 * onClick
-	 *  ‘OŒAŸŒƒ{ƒ^ƒ“‚ÅƒNƒŠƒbƒN‚³‚ê‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚é
+	 *  å‰æœˆã€æ¬¡æœˆãƒœã‚¿ãƒ³ã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹
 	 */
 	public void onClick(View v) {
-		// Œ»İ‚Ì’–Ú‚µ‚Ä‚¢‚é“ú•t‚ğ“–Œ‚Ì1“ú‚É•ÏX‚·‚é
+		// ç¾åœ¨ã®æ³¨ç›®ã—ã¦ã„ã‚‹æ—¥ä»˜ã‚’å½“æœˆã®1æ—¥ã«å¤‰æ›´ã™ã‚‹
 		mCalendar.set(Calendar.DAY_OF_MONTH,1);
 		if(v == mPrevMonthButton){
-			// 1ƒ–ŒŒ¸Z‚·‚é
+			// 1ãƒ¶æœˆæ¸›ç®—ã™ã‚‹
 			mCalendar.add(Calendar.MONTH, -1);
 		}else if(v == mNextMonthButton){
-			// 1ƒ–Œ‰ÁZ‚·‚é
+			// 1ãƒ¶æœˆåŠ ç®—ã™ã‚‹
 			mCalendar.add(Calendar.MONTH, 1);
 		}
 		mYearMonthTextView.setText(mCalendar.get(Calendar.YEAR)+"/"+(mCalendar.get(Calendar.MONTH)+1));
@@ -183,53 +189,53 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 
 	/**
 	 * onActivityResult
-	 *  ŒÄ‚Ño‚µ‚½Editor‚Ìˆ—‚ªŠ®—¹‚µ‚½‚Æ‚«ŒÄ‚Ño‚³‚ê‚é
-	 * @param requestCode ‹N“®‚Éw’è‚µ‚½requestCode
-	 * @param resultCode ŒÄ‚Ño‚µ‚½Activity‚ªI—¹‚Éİ’è‚µ‚½I—¹ƒR[ƒh
-	 * @param data ŒÄ‚Ño‚µ‚½Activity‚ªI—¹‚Éİ’è‚µ‚½Intent
+	 *  å‘¼ã³å‡ºã—ãŸEditorã®å‡¦ç†ãŒå®Œäº†ã—ãŸã¨ãå‘¼ã³å‡ºã•ã‚Œã‚‹
+	 * @param requestCode èµ·å‹•æ™‚ã«æŒ‡å®šã—ãŸrequestCode
+	 * @param resultCode å‘¼ã³å‡ºã—ãŸActivityãŒçµ‚äº†æ™‚ã«è¨­å®šã—ãŸçµ‚äº†ã‚³ãƒ¼ãƒ‰
+	 * @param data å‘¼ã³å‡ºã—ãŸActivityãŒçµ‚äº†æ™‚ã«è¨­å®šã—ãŸIntent
 	 */
 	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 		if(requestCode == EVENT_DETAIL && resultCode == RESULT_OK){
 			if(data.getBooleanExtra(EventCalendarActivity.CHANGED,false)){
-				// EVENT_DETAIL‚Ìˆ—Œ‹‰Ê‚ªOK‚ÅChanged‚ªtrue‚È‚çAƒf[ƒ^ƒx[ƒXXV‚ğ’Ê’m
+				// EVENT_DETAILã®å‡¦ç†çµæœãŒOKã§ChangedãŒtrueãªã‚‰ã€ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹æ›´æ–°ã‚’é€šçŸ¥
 				mDateCellAdapter.notifyDataSetChanged();
-				// Widget‚Ì“à—e‚ğXV‚·‚é’Ê’m‚ğ‚¨‚±‚È‚¤B
+				// Widgetã®å†…å®¹ã‚’æ›´æ–°ã™ã‚‹é€šçŸ¥ã‚’ãŠã“ãªã†ã€‚
 				Intent serviceIntent = new Intent(this,WidgetService.class);
 				startService(serviceIntent);
 			}
 		}else if(requestCode == BROWSER){
-			//ƒuƒ‰ƒEƒU‚ªI—¹‚µ‚½‚çAƒR[ƒh‚ğ“ü—Í‚·‚éƒAƒNƒeƒBƒrƒeƒB‚ğ‹N“®‚·‚éB
+			//ãƒ–ãƒ©ã‚¦ã‚¶ãŒçµ‚äº†ã—ãŸã‚‰ã€ã‚³ãƒ¼ãƒ‰ã‚’å…¥åŠ›ã™ã‚‹ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ã‚’èµ·å‹•ã™ã‚‹ã€‚
 			Intent intent = new Intent(EventCalendarActivity.this,AuthCodeActivity.class);
 			startActivityForResult(intent,AUTH_CODE_ACTIVITY);
 		}else if(requestCode == AUTH_CODE_ACTIVITY){
 			if(resultCode == RESULT_OK){
-				// AuthCode‚ª³íI—¹‚µ‚½‚çIntent‚©‚çAuthCode‚ğæ“¾
+				// AuthCodeãŒæ­£å¸¸çµ‚äº†ã—ãŸã‚‰Intentã‹ã‚‰AuthCodeã‚’å–å¾—
 				mAuthCode = data.getStringExtra(AUTH_CODE);
-				// AuthCode‚ª³‚µ‚­æ“¾‚Å‚«‚½ê‡‚ÍAÄ“xsyncCalendar‚ğÀs
+				// AuthCodeãŒæ­£ã—ãå–å¾—ã§ããŸå ´åˆã¯ã€å†åº¦syncCalendarã‚’å®Ÿè¡Œ
 				syncCalendar();
 			}
 		}
 	}
 
 	/**
-	 * ƒƒjƒ…[ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«‚Ìˆ—
+	 * ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ãã®å‡¦ç†
 	 *
-	 * @param Menu Œ»İ‚Ìƒƒjƒ…[
-	 * @return ƒƒjƒ…[‚Ì¶¬‚É¬Œ÷‚µ‚½‚çtrue
+	 * @param Menu ç¾åœ¨ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+	 * @return ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ç”Ÿæˆã«æˆåŠŸã—ãŸã‚‰true
 	 */
 	public boolean onCreateOptionsMenu (Menu menu){
-		// MenuInflater‚ğæ“¾‚·‚é
+		// MenuInflaterã‚’å–å¾—ã™ã‚‹
 		MenuInflater menuInflater = getMenuInflater();
-		// MenuInflater‚ğg—p‚µ‚Äƒƒjƒ…[‚ğƒŠƒ\[ƒX‚©‚çì¬‚·‚é
+		// MenuInflaterã‚’ä½¿ç”¨ã—ã¦ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ãƒªã‚½ãƒ¼ã‚¹ã‹ã‚‰ä½œæˆã™ã‚‹
 		menuInflater.inflate(R.menu.menu,menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
-	 * ƒƒjƒ…[‚ª‘I‘ğ‚³‚ê‚½‚Æ‚«‚Ìˆ—
+	 * ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãŒé¸æŠã•ã‚ŒãŸã¨ãã®å‡¦ç†
 	 *
-	 * @param MenuItem ‘I‘ğ‚³‚ê‚½ƒƒjƒ…[ƒAƒCƒeƒ€
-	 * @return ˆ—‚ğs‚Á‚½ê‡‚Ítrue 
+	 * @param MenuItem é¸æŠã•ã‚ŒãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ 
+	 * @return å‡¦ç†ã‚’è¡Œã£ãŸå ´åˆã¯true 
 	 */
 	public boolean onOptionsItemSelected (MenuItem item){
 		if(item.getItemId() == R.id.syncMenu){
@@ -238,48 +244,48 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 		}
 		return false;
 	}
-	// ƒvƒƒOƒŒƒXƒ_ƒCƒAƒƒO‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private ProgressDialog mProgressDialog = null;
 	/**
-	 * getGoogleCalendar ‚Æ updateGoogleCalendar‚ğŒÄ‚Ño‚·
-	 * ƒvƒƒOƒŒƒXƒ_ƒCƒAƒƒO‚ğ•\¦‚·‚éˆ×‚É•ÊƒXƒŒƒbƒh‚ÅÀs‚·‚éB
+	 * getGoogleCalendar ã¨ updateGoogleCalendarã‚’å‘¼ã³å‡ºã™
+	 * ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤ºã™ã‚‹ç‚ºã«åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰ã§å®Ÿè¡Œã™ã‚‹ã€‚
 	 */
 	public void syncGoogleCalendar(){
-		// ƒvƒƒOƒŒƒXƒ_ƒCƒAƒƒO‚Ìì¬
+		// ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ä½œæˆ
 		mProgressDialog = new ProgressDialog(this);
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		mProgressDialog.setMessage(getString(R.string.nowOnSync));
-		// “r’†‚Å’â~‚·‚é‚±‚Æ‚Í‚Å‚«‚È‚¢
+		// é€”ä¸­ã§åœæ­¢ã™ã‚‹ã“ã¨ã¯ã§ããªã„
 		mProgressDialog.setCancelable(false);
-		// ƒvƒƒOƒŒƒXƒ_ƒCƒAƒƒO‚Ì•\¦
+		// ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®è¡¨ç¤º
 		mProgressDialog.show();
-		// ÀÛ‚Ìˆ—‚ğs‚¤ƒXƒŒƒbƒh‚ğì¬
+		// å®Ÿéš›ã®å‡¦ç†ã‚’è¡Œã†ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½œæˆ
 		Thread thread = new Thread(runSyncGoogleCalendar);
-		// ƒXƒŒƒbƒh‚ÌÀsŠJn
+		// ã‚¹ãƒ¬ãƒƒãƒ‰ã®å®Ÿè¡Œé–‹å§‹
 		thread.start();
 	}
 
-	// notifyDataSetChanged‚ğó‚¯æ‚éhandler
+	// notifyDataSetChangedã‚’å—ã‘å–ã‚‹handler
 	private Handler mNotifyHandler = new Handler();
 	/**
-	 * getGoogleCalendar‚ÌÀs‚ğs‚¤ƒXƒŒƒbƒh
+	 * getGoogleCalendarã®å®Ÿè¡Œã‚’è¡Œã†ã‚¹ãƒ¬ãƒƒãƒ‰
 	 */
 	private Runnable runSyncGoogleCalendar = new Runnable(){
 		public void run() {
-			// XVˆ—–{‘Ì
+			// æ›´æ–°å‡¦ç†æœ¬ä½“
 			getGoogleCalendar();
 			updateGoogleCalendar();
-			// ƒCƒxƒ“ƒgƒf[ƒ^‚ªXV‚³‚ê‚½‚Ì‚ÅƒAƒ‰[ƒ€‚ğXV
+			// ã‚¤ãƒ™ãƒ³ãƒˆãƒ‡ãƒ¼ã‚¿ãŒæ›´æ–°ã•ã‚ŒãŸã®ã§ã‚¢ãƒ©ãƒ¼ãƒ ã‚’æ›´æ–°
 			AlarmReceiver.updateAlarm(EventCalendarActivity.this);
-			// Widget‚Ì“à—e‚ğXV‚·‚é’Ê’m‚ğs‚¤
+			// Widgetã®å†…å®¹ã‚’æ›´æ–°ã™ã‚‹é€šçŸ¥ã‚’è¡Œã†
 			Intent serviceIntent = new Intent(EventCalendarActivity.this,WidgetService.class);
 			startService(serviceIntent);
-			// XV‚ªI‚í‚Á‚½‚çƒvƒƒOƒŒƒXƒ_ƒCƒAƒƒO‚ğÁ‹
+			// æ›´æ–°ãŒçµ‚ã‚ã£ãŸã‚‰ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’æ¶ˆå»
 			mProgressDialog.dismiss();
-			// notifyhandler‚ÉnotifyDataSetChanged‚Ìˆ—‚ğƒ|ƒXƒg
+			// notifyhandlerã«notifyDataSetChangedã®å‡¦ç†ã‚’ãƒã‚¹ãƒˆ
 			mNotifyHandler.post(new Runnable(){
 				public void run(){
-					// mNotifyHandler‚ğ‚Á‚Ä‚¢‚éƒvƒƒZƒX‚ÅÀs‚³‚ê‚éB
+					// mNotifyHandlerã‚’æŒã£ã¦ã„ã‚‹ãƒ—ãƒ­ã‚»ã‚¹ã§å®Ÿè¡Œã•ã‚Œã‚‹ã€‚
 					mDateCellAdapter.notifyDataSetChanged();
 				}
 			});
@@ -287,52 +293,54 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 	};
 
 	/**
-	 * GoogleƒJƒŒƒ“ƒ_[‚Æ“¯Šú‚·‚é
+	 * Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã¨åŒæœŸã™ã‚‹
 	 */
 	public void syncCalendar(){
-		// XVŠJn‚ğ•Û‘¶
+		// æ›´æ–°é–‹å§‹æ™‚åˆ»ã‚’ä¿å­˜
 		mUpdateStartTime = DateStrCls.toUTCString(new GregorianCalendar());
-		// ƒvƒŠƒtƒ@ƒŒƒ“ƒXŠm”F‚Ì‚½‚ß‚ÉsharedPreferences‚ğæ“¾
+		// ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ç¢ºèªã®ãŸã‚ã«sharedPreferencesã‚’å–å¾—
 		SharedPreferences sharedPreferences  = getSharedPreferences(AUTH_INFO, MODE_PRIVATE);
-		// ‘æ“ñˆø”‚ÍƒfƒtƒHƒ‹ƒg’lFw’è‚µ‚½–¼‘O‚Ìƒf[ƒ^‚ª–³‚©‚Á‚½‚Æ‚«‚É•Ô‚Á‚Ä‚­‚é’l
+		// ç¬¬äºŒå¼•æ•°ã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ï¼šæŒ‡å®šã—ãŸåå‰ã®ãƒ‡ãƒ¼ã‚¿ãŒç„¡ã‹ã£ãŸã¨ãã«è¿”ã£ã¦ãã‚‹å€¤
 		mAccessToken  = sharedPreferences.getString(ACCESS_TOKEN, null);
 		mRefreshToken  = sharedPreferences.getString(REFRESH_TOKEN,null);
 		mAccessTokenExpire = sharedPreferences.getLong(ACCESS_TOKEN_EXPIRE, 0);
-		// ‘O‰ñXV‚ğæ“¾
+		// å‰å›æ›´æ–°æ™‚åˆ»ã‚’å–å¾—
 		mLastUpdate = sharedPreferences.getString(LAST_UPDATE,null);
 		if(mRefreshToken == null){
-			// RefreshToken ‚ª–³‚¢‚Ì‚ÅA”FØˆ—‚ğŠJn
+			// RefreshToken ãŒç„¡ã„ã®ã§ã€èªè¨¼å‡¦ç†ã‚’é–‹å§‹
 			if(mAuthCode == null || mAuthCode.equals("")){
-				// AuthCode‚ª‚È‚¯‚ê‚ÎstartOAuth‚ğÀs
+				// AuthCodeãŒãªã‘ã‚Œã°startOAuthã‚’å®Ÿè¡Œ
 				startOAuth();
 			}else{
-				// AuthCode‚ª‚ ‚ê‚ÎA‚·‚Å‚ÉWeb‚Å‚ÌAuthˆ—‚Ís‚Á‚Ä‚¢‚é‚Ì‚ÅAAccessToken‚ğæ“¾
+				// AuthCodeãŒã‚ã‚Œã°ã€ã™ã§ã«Webã§ã®Authå‡¦ç†ã¯è¡Œã£ã¦ã„ã‚‹ã®ã§ã€AccessTokenã‚’å–å¾—
 				if(getAccessToken()){
 					syncGoogleCalendar();
 				}
 			}
 		}else if(mAccessTokenExpire<Calendar.getInstance().getTimeInMillis()){
-			// AccessToken ‚ªŠúŒÀØ‚ê‚È‚Ì‚ÅAccessToken‚ğÄæ“¾‚µ‚Ä‚©‚çAgetGoogleCalendar‚ğÀs
+			// AccessToken ãŒæœŸé™åˆ‡ã‚Œãªã®ã§AccessTokenã‚’å†å–å¾—ã—ã¦ã‹ã‚‰ã€getGoogleCalendarã‚’å®Ÿè¡Œ
 			if(refreshToken()){
 				syncGoogleCalendar();
 
 			}
 		}else{
-			// AccessToken‚ª—LŒø‚È‚Ì‚ÅA‚»‚Ì‚Ü‚ÜgetGoogleCalendar()‚ğÀs
+			// AccessTokenãŒæœ‰åŠ¹ãªã®ã§ã€ãã®ã¾ã¾getGoogleCalendar()ã‚’å®Ÿè¡Œ
 			syncGoogleCalendar();
 		}
 	}
-	// ƒJƒŒƒ“ƒ_[API‚É“Á’è‚ÌFeed‚Å‚Í‚È‚¢ƒf[ƒ^‚ÉƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌURL
+	// ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼APIã«ç‰¹å®šã®Feedã§ã¯ãªã„ãƒ‡ãƒ¼ã‚¿ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®URL
 	public static final String DEFAULT_URL = "https://www.google.com/calendar/feeds/default/private/full";
+	// HTTPå‡¦ç†ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹ã‚’ä¿æŒã™ã‚‹ãƒ¡ãƒ³ãƒå¤‰æ•°
+	private boolean mHttpSucceeded = false;
 	/**
-	 * GoogleƒJƒŒƒ“ƒ_[‚Éƒf[ƒ^‚ğƒAƒbƒvƒ[ƒh‚·‚é
+	 * Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	 */
 	public void updateGoogleCalendar(){
-		// MODIFIEDƒtƒ‰ƒO‚Ì—§‚Á‚Ä‚¢‚éƒf[ƒ^‚ğŒŸõ
+		// MODIFIEDãƒ•ãƒ©ã‚°ã®ç«‹ã£ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’æ¤œç´¢
 		String selection = EventInfo.MODIFIED + " = 1";
 		Cursor c = mContentResolver.query(RESOLVER_URI, null, selection, null, null);
 
-		// insert/update/delete‚»‚ê‚¼‚ê‚Ìƒf[ƒ^‚ÌƒŠƒXƒg
+		// insert/update/deleteãã‚Œãã‚Œã®ãƒ‡ãƒ¼ã‚¿ã®ãƒªã‚¹ãƒˆ
 		ArrayList<EventInfo> insertEvents = new ArrayList<EventInfo>();
 		ArrayList<EventInfo> updateEvents = new ArrayList<EventInfo>();
 		ArrayList<EventInfo> deleteEvents = new ArrayList<EventInfo>();
@@ -341,81 +349,80 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 			EventInfo eventInfo = new EventInfo(mContentResolver);
 			eventInfo.setValues(c);
 			if(eventInfo.getEventId() == null){
-				// eventId‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ƒf[ƒ^‚ÍAGoogleƒJƒŒƒ“ƒ_[‚É‚Í‚È‚¢V‹Kƒf[ƒ^‚È‚Ì‚Å
-				// insertƒŠƒXƒg‚É“o˜^
+				// eventIdãŒè¨­å®šã•ã‚Œã¦ã„ãªã„ãƒ‡ãƒ¼ã‚¿ã¯ã€Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã«ã¯ãªã„æ–°è¦ãƒ‡ãƒ¼ã‚¿ãªã®ã§
+				// insertãƒªã‚¹ãƒˆã«ç™»éŒ²
 				insertEvents.add(eventInfo);
 			}else if(eventInfo.getDeleted() == 1){
-				// íœƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Ì‚ÅdelteƒŠƒXƒg‚É“o˜^
+				// å‰Šé™¤ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹ã®ã§delteãƒªã‚¹ãƒˆã«ç™»éŒ²
 				deleteEvents.add(eventInfo);
 			}else {
-				// ‚»‚êˆÈŠO‚ÍupdateƒŠƒXƒg‚É“o˜^
+				// ãã‚Œä»¥å¤–ã¯updateãƒªã‚¹ãƒˆã«ç™»éŒ²
 				updateEvents.add(eventInfo);
 			}
 		}
 		c.close();
-		// ƒp[ƒT‚ğì¬
+		// ãƒ‘ãƒ¼ã‚µã‚’ä½œæˆ
 		CalendarParser cp = new CalendarParser(mContentResolver);
-		// insertˆ—
+		// insertå‡¦ç†
 		for(EventInfo e : insertEvents){
-			// insert—p‚Ìƒf[ƒ^‚ğì¬‚µPOST‚µ‚ÄŒ‹‰Ê‚ğæ“¾
-			// Œ‹‰Ê‚ğparse‚µ‚ÄV‚µ‚¢ƒf[ƒ^‚Æ‚µ‚Ä“o˜^
+			// insertç”¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—POSTã—ã¦çµæœã‚’å–å¾—
+			// çµæœã‚’parseã—ã¦æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿ã¨ã—ã¦ç™»éŒ²
 			cp.parse(mCalendarHttpClient.httpPost(DEFAULT_URL+"?oauth_token="+mAccessToken,cp.insertSerializer(e)));
-			if(mCalendarHttpClient.mHttpSucceeded){
-				// ŒÃ‚¢ƒf[ƒ^‚ğíœ
+			if(mHttpSucceeded){
+				// å¤ã„ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
 				selection = EventInfo.ID + " = " + e.getId();
 				mContentResolver.delete(RESOLVER_URI, selection, null);
 			}
 		}
-		// updateˆ—
+		// updateå‡¦ç†
 		for(EventInfo e : updateEvents){
-			// •ÒW—pURL‚ğæ“¾
+			// ç·¨é›†ç”¨URLã‚’å–å¾—
 			String url = e.getEditUrl()+"?oauth_token="+mAccessToken;
-			// ƒAƒbƒvƒf[ƒgŒ‹‰Ê‚ğƒp[ƒX‚µ‚ÄŒ»İ‚Ìƒf[ƒ^‚ğXV
+			// ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆçµæœã‚’ãƒ‘ãƒ¼ã‚¹ã—ã¦ç¾åœ¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’æ›´æ–°
 			cp.parse(mCalendarHttpClient.httpPut(url,cp.updateSerializer(mCalendarHttpClient.httpGet(url),e)));
 		}
-		// deleteˆ—
+		// deleteå‡¦ç†
 		for(EventInfo e : deleteEvents){
-			// •ÒW—pURL‚ğg‚Á‚ÄAhttpDelete‚Ìˆ—
+			// ç·¨é›†ç”¨URLã‚’ä½¿ã£ã¦ã€httpDeleteã®å‡¦ç†
 			mCalendarHttpClient.httpDelete(e.getEditUrl()+"?oauth_token="+mAccessToken);
-			if(mCalendarHttpClient.mHttpSucceeded){
-				// ƒf[ƒ^ƒx[ƒX‚©‚ç‚àíœ
+			if(mHttpSucceeded){
+				// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰ã‚‚å‰Šé™¤
 				selection = EventInfo.ID + " = " + e.getId();
 				mContentResolver.delete(RESOLVER_URI, selection, null);
 			}
 		}
 	}
 
-
 	/**
 	 * startOAuth
-	 * OAuth 2.0‚É]‚Á‚½”FØˆ—‚Ìˆ×‚Éƒuƒ‰ƒEƒU‚ğg—p‚µ‚Ä
-	 * Google‚Ì”FØƒy[ƒW‚ğŠJ‚­
+	 * OAuth 2.0ã«å¾“ã£ãŸèªè¨¼å‡¦ç†ã®ç‚ºã«ãƒ–ãƒ©ã‚¦ã‚¶ã‚’ä½¿ç”¨ã—ã¦
+	 * Googleã®èªè¨¼ãƒšãƒ¼ã‚¸ã‚’é–‹ã
 	 */
 	private void startOAuth(){
-		// URI‚ğw’è‚µ‚Äƒuƒ‰ƒEƒU‚ğ‹N“®‚·‚éˆ×‚ÌIntent‚ğì¬‚·‚éB
-		// ˆÃ–Ù“IƒCƒ“ƒeƒ“ƒg‚È‚Ì‚ÅAƒ†[ƒU‚Ì‘I‘ğ‚µ‚½ƒuƒ‰ƒEƒU‚ÅURI‚ğŠJ‚­
+		// URIã‚’æŒ‡å®šã—ã¦ãƒ–ãƒ©ã‚¦ã‚¶ã‚’èµ·å‹•ã™ã‚‹ç‚ºã®Intentã‚’ä½œæˆã™ã‚‹ã€‚
+		// æš—é»™çš„ã‚¤ãƒ³ãƒ†ãƒ³ãƒˆãªã®ã§ã€ãƒ¦ãƒ¼ã‚¶ã®é¸æŠã—ãŸãƒ–ãƒ©ã‚¦ã‚¶ã§URIã‚’é–‹ã
 		Intent intent = new Intent(Intent.ACTION_VIEW, OAUTH_URI);
 		startActivityForResult(intent,BROWSER);
 	}
 
 	/**
-	 * ƒT[ƒo‚©‚çToken‚ğæ“¾‚·‚é
+	 * ã‚µãƒ¼ãƒã‹ã‚‰Tokenã‚’å–å¾—ã™ã‚‹
 	 *
-	 * @param ArrayList<NameValuePair> –¼‘O‚Æ’l‚ÌƒyƒA‚ÌƒŠƒXƒg
-	 * @return Map<String,String> –¼‘O‚Æ•¶š—ñ‚ÌMap (À‘Ì‚ÍHashMap)
+	 * @param ArrayList<NameValuePair> åå‰ã¨å€¤ã®ãƒšã‚¢ã®ãƒªã‚¹ãƒˆ
+	 * @return Map<String,String> åå‰ã¨æ–‡å­—åˆ—ã®Map (å®Ÿä½“ã¯HashMap)
 	 */
 	private Map<String,String> getToken(ArrayList<NameValuePair> nameValuePair) {
 		HashMap<String,String> results = new HashMap<String,String>();
-		// HttpPostƒNƒ‰ƒX‚ÌƒIƒuƒWƒFƒNƒg‚ğURL‚ğw’è‚µ‚Äì¬
+		// HttpPostã‚¯ãƒ©ã‚¹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’URLã‚’æŒ‡å®šã—ã¦ä½œæˆ
 		HttpPost httpPost  = new HttpPost("https://accounts.google.com/o/oauth2/token");
-		// DefaultHttpClientƒƒ\ƒbƒh‚ÅHttpClient‚ğæ“¾‚µAƒwƒbƒ_‚âEntity‚ğİ’è‚µ‚Äexecute‚µ‚Ü‚·B
+		// DefaultHttpClientãƒ¡ã‚½ãƒƒãƒ‰ã§HttpClientã‚’å–å¾—ã—ã€ãƒ˜ãƒƒãƒ€ã‚„Entityã‚’è¨­å®šã—ã¦executeã—ã¾ã™ã€‚
 		HttpClient httpClient = new DefaultHttpClient();
 		httpPost.setHeader("Content-Type","application/x-www-form-urlencoded");
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
 			HttpResponse response = httpClient.execute(httpPost);
 			if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-				// execute‚ÌŒ‹‰Ê‚ÌHttpResponse‚©‚çóM‚µ‚½ƒf[ƒ^‚ğæ“¾
+				// executeã®çµæœã®HttpResponseã‹ã‚‰å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
 				BufferedReader br = new BufferedReader(
 						new InputStreamReader(
 								new BufferedInputStream(
@@ -428,7 +435,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 						sb.append(line);
 					}
 					json = sb.toString();
-					// æ‚èo‚µ‚½ƒf[ƒ^‚ğJSONƒp[ƒT‚Å‰ğß‚µ‚Ä’l‚ğæ“¾
+					// å–ã‚Šå‡ºã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’JSONãƒ‘ãƒ¼ã‚µã§è§£é‡ˆã—ã¦å€¤ã‚’å–å¾—
 					JSONObject rootObject = new JSONObject(json);
 					if(rootObject.has(ACCESS_TOKEN)){
 						results.put(ACCESS_TOKEN,  rootObject.getString(ACCESS_TOKEN));
@@ -453,55 +460,55 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 		return results;
 	}
 	/**
-	 * AccessToken‚ğæ“¾‚·‚é
+	 * AccessTokenã‚’å–å¾—ã™ã‚‹
 	 *
-	 * @return ¬Œ÷‚µ‚½‚çtrue ¸”s‚µ‚½‚ç false
+	 * @return æˆåŠŸã—ãŸã‚‰true å¤±æ•—ã—ãŸã‚‰ false
 	 */
 	private boolean getAccessToken(){
 		mAccessToken = null;
 		mRefreshToken = null;
 		ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
-		// ƒT[ƒo‚É“n‚·ƒpƒ‰ƒ[ƒ^‚ğnameValuePair‚ÉƒZƒbƒg
-		// client_id,client_secret‚ÍGoogle APIS‚Åæ“¾‚µ‚½‚à‚Ì
-		// code‚ÍstartOAuth‚Åæ“¾‚µ‚½”FØƒR[ƒh(AuthCode)
+		// ã‚µãƒ¼ãƒã«æ¸¡ã™ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’nameValuePairã«ã‚»ãƒƒãƒˆ
+		// client_id,client_secretã¯Google APISã§å–å¾—ã—ãŸã‚‚ã®
+		// codeã¯startOAuthã§å–å¾—ã—ãŸèªè¨¼ã‚³ãƒ¼ãƒ‰(AuthCode)
 		nameValuePair.add(new BasicNameValuePair("client_id",CLIENT_ID));
 		nameValuePair.add(new BasicNameValuePair("client_secret",CLIENT_SECRET));
 		nameValuePair.add(new BasicNameValuePair("redirect_uri","urn:ietf:wg:oauth:2.0:oob"));
 		nameValuePair.add(new BasicNameValuePair("grant_type","authorization_code"));
 		nameValuePair.add(new BasicNameValuePair("code",mAuthCode));
-		// getToken ‚ğÀs‚µAtoken—ñ‚ğæ“¾
+		// getToken ã‚’å®Ÿè¡Œã—ã€tokenåˆ—ã‚’å–å¾—
 		Map<String,String> tokens = getToken(nameValuePair);
 		if(tokens != null){
-			// tokens‚ÉŠi”[‚³‚ê‚½‚ÉŠi”[‚³‚ê‚½’l‚ğ•Ï”‚ÉŠi”[
+			// tokensã«æ ¼ç´ã•ã‚ŒãŸã«æ ¼ç´ã•ã‚ŒãŸå€¤ã‚’å¤‰æ•°ã«æ ¼ç´
 			mAccessToken = tokens.get(ACCESS_TOKEN);
 			mRefreshToken = tokens.get(REFRESH_TOKEN);
 			mAccessTokenExpire = Long.valueOf(tokens.get(EXPIRES_IN));
-			//ƒvƒŠƒtƒ@ƒŒƒ“ƒX‚Ì•ÒW‚ğ‚·‚é‚½‚ß‚ÉSharedPreferences.EditorƒIƒuƒWƒFƒNƒg‚ğì¬
+			//ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã®ç·¨é›†ã‚’ã™ã‚‹ãŸã‚ã«SharedPreferences.Editorã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆ
 			SharedPreferences.Editor editor = getSharedPreferences(AUTH_INFO, MODE_PRIVATE).edit();
-			//ShraedPreferences.Editor‚É’l‚ğƒZƒbƒg
+			//ShraedPreferences.Editorã«å€¤ã‚’ã‚»ãƒƒãƒˆ
 			editor.putString(ACCESS_TOKEN, mAccessToken);
 			editor.putString(REFRESH_TOKEN, mRefreshToken);
 			editor.putLong(ACCESS_TOKEN_EXPIRE,mAccessTokenExpire);
-			//ƒvƒŠƒtƒ@ƒŒƒ“ƒX‚ğ•Û‘¶
+			//ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã‚’ä¿å­˜
 			editor.commit();
 			return true;
 		}
 		return false;
 	}
 	/**
-	 * RefreshToken‚ğg—p‚µ‚ÄAccessToken‚ğXV‚·‚é
+	 * RefreshTokenã‚’ä½¿ç”¨ã—ã¦AccessTokenã‚’æ›´æ–°ã™ã‚‹
 	 *
-	 * @return ¬Œ÷‚µ‚½‚çtrue ¸”s‚µ‚½‚çfalse
+	 * @return æˆåŠŸã—ãŸã‚‰true å¤±æ•—ã—ãŸã‚‰false
 	 */
 	private boolean refreshToken(){
 		mAccessToken = null;
-		// ƒT[ƒo‚É“n‚·ƒpƒ‰ƒ[ƒ^‚ğnameValuePair‚ÉƒZƒbƒg
+		// ã‚µãƒ¼ãƒã«æ¸¡ã™ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’nameValuePairã«ã‚»ãƒƒãƒˆ
 		ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
 		nameValuePair.add(new BasicNameValuePair("client_id",CLIENT_ID));
 		nameValuePair.add(new BasicNameValuePair("client_secret",CLIENT_SECRET));
 		nameValuePair.add(new BasicNameValuePair("refresh_token",mRefreshToken));
 		nameValuePair.add(new BasicNameValuePair("grant_type","refresh_token"));
-		// getToken ‚ğÀs‚µAtoken—ñ‚ğæ“¾
+		// getToken ã‚’å®Ÿè¡Œã—ã€tokenåˆ—ã‚’å–å¾—
 		Map<String,String> tokens = getToken(nameValuePair);
 		if(tokens != null){
 			mAccessToken = tokens.get(ACCESS_TOKEN);
@@ -515,28 +522,28 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 		return false;
 	}
 
-	// GoogleCalendar‚ÌFEED‚ğæ“¾‚·‚éURL
-	// showdeleted=true‚ğ‚Â‚¯‚é‚±‚Æ‚ÅƒLƒƒƒ“ƒZƒ‹‚³‚ê‚½iíœ‚³‚ê‚½jƒCƒxƒ“ƒg‚Ìî•ñ‚àæ“¾‚·‚é
+	// GoogleCalendarã®FEEDã‚’å–å¾—ã™ã‚‹URL
+	// showdeleted=trueã‚’ã¤ã‘ã‚‹ã“ã¨ã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚ŒãŸï¼ˆå‰Šé™¤ã•ã‚ŒãŸï¼‰ã‚¤ãƒ™ãƒ³ãƒˆã®æƒ…å ±ã‚‚å–å¾—ã™ã‚‹
 	public static final String CALENDAR_FEED_URL = 
 			"https://www.google.com/calendar/feeds/default/private/full?showdeleted=true";
 	/**
-	 * GoogleƒJƒŒƒ“ƒ_[‚Ìî•ñ‚ğæ“¾‚·‚é
+	 * Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	 */
 	public void getGoogleCalendar(){
 		String updatedQuery = null;
 		if(mLastUpdate!=null){
-			// ‘O‰ñXV“ú‚ª‘¶İ‚µ‚Ä‚¢‚ê‚ÎA‚»‚ê‚ğupdated-min‚ÉƒZƒbƒg‚µ
-			// ‚»‚êˆÈ~‚ÌXVƒf[ƒ^‚Ì‚İæ“¾
+			// å‰å›æ›´æ–°æ—¥æ™‚ãŒå­˜åœ¨ã—ã¦ã„ã‚Œã°ã€ãã‚Œã‚’updated-minã«ã‚»ãƒƒãƒˆã—
+			// ãã‚Œä»¥é™ã®æ›´æ–°ãƒ‡ãƒ¼ã‚¿ã®ã¿å–å¾—
 			updatedQuery = "&updated-min="+mLastUpdate;
 		}else{
-			// ˆê“x‚àXV‚µ‚Ä‚¢‚È‚¯‚ê‚ÎAupdateQuery‚Íw’è‚µ‚È‚¢
+			// ä¸€åº¦ã‚‚æ›´æ–°ã—ã¦ã„ãªã‘ã‚Œã°ã€updateQueryã¯æŒ‡å®šã—ãªã„
 			updatedQuery = "";
 		}
-		// ”FØ‚Ì‚½‚ß‚ÉAccessToken‚ğoauth_token‚Æ‚µ‚ÄURL‚É’Ç‰Á
+		// èªè¨¼ã®ãŸã‚ã«AccessTokenã‚’oauth_tokenã¨ã—ã¦URLã«è¿½åŠ 
 		String AuthParam = "&oauth_token="+mAccessToken;
 		String nextUrl = CALENDAR_FEED_URL;
 		CalendarParser cp = new CalendarParser(mContentResolver);
-		// nextUrl‚ª‚ ‚é‚©‚¬‚èŒJ‚è•Ô‚·
+		// nextUrlãŒã‚ã‚‹ã‹ãã‚Šç¹°ã‚Šè¿”ã™
 		while(nextUrl != null){
 			nextUrl = cp.parse(mCalendarHttpClient.httpGet(nextUrl+AuthParam+updatedQuery));
 		}
@@ -544,7 +551,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 		saveLastUpdate();
 	}
 	/**
-	 * ƒvƒŠƒtƒ@ƒŒƒ“ƒX‚É’¼‘O‚ÌXV“ú‚ğ‹L˜^
+	 * ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã«ç›´å‰ã®æ›´æ–°æ—¥æ™‚ã‚’è¨˜éŒ²
 	 */
 	public void saveLastUpdate(){
 		SharedPreferences.Editor e = getSharedPreferences(AUTH_INFO, MODE_PRIVATE).edit();
@@ -553,55 +560,55 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 	}
 
 	/**
-	 * DateCellAdapterƒNƒ‰ƒX
-	 *  BaseAdapter‚ğŒp³‚·‚éB
+	 * DateCellAdapterã‚¯ãƒ©ã‚¹
+	 *  BaseAdapterã‚’ç¶™æ‰¿ã™ã‚‹ã€‚
 	 */
 	public class DateCellAdapter extends BaseAdapter {
 		private static final int NUM_ROWS = 6;
 		private static final int NUM_OF_CELLS = DAYS_OF_WEEK*NUM_ROWS;
 		private LayoutInflater mLayoutInflater = null;
 		/**
-		 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚Íƒpƒ‰ƒƒ^‚Åó‚¯æ‚Á‚½context‚ğg—p‚µ‚Ä
-		 * uLayoutInflaterv‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚éB
-		 * @param context ƒAƒNƒeƒBƒrƒeƒB
+		 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ãƒ‘ãƒ©ãƒ¡ã‚¿ã§å—ã‘å–ã£ãŸcontextã‚’ä½¿ç”¨ã—ã¦
+		 * ã€ŒLayoutInflaterã€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã™ã‚‹ã€‚
+		 * @param context ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£
 		 */
 		DateCellAdapter(Context context){
-			// getSystemService‚ÅContext‚©‚çLayoutInflater‚ğæ“¾
+			// getSystemServiceã§Contextã‹ã‚‰LayoutInflaterã‚’å–å¾—
 			mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 		/**
 		 * getCount
-		 * uNUM_OF_CELLSv (42)‚ğ•Ô‚·
+		 * ã€ŒNUM_OF_CELLSã€ (42)ã‚’è¿”ã™
 		 */
 		public int getCount() {
 			return NUM_OF_CELLS;
 		}
 		/**
 		 * getItem
-		 * •K—v‚È‚¢‚Ì‚Ånull‚ğ•Ô‚·
+		 * å¿…è¦ãªã„ã®ã§nullã‚’è¿”ã™
 		 */
 		public Object getItem(int position) {
 			return null;
 		}
 		/**
 		 * getItemId
-		 * •K—v‚È‚¢‚Ì‚Å0‚ğ•Ô‚·
+		 * å¿…è¦ãªã„ã®ã§0ã‚’è¿”ã™
 		 */
 		public long getItemId(int position) {
 			return 0;
 		}
 		/**
 		 * getView
-		 *  DateCell‚ÌView‚ğì¬‚µ‚Ä•Ô‚·‚½‚ß‚Ìƒƒ\ƒbƒh
-		 *  @param int position ƒZƒ‹‚ÌˆÊ’u
-		 *  @param View convertView ‘O‚Ég—p‚µ‚½View
-		 *  @param ViewGroup parent eƒrƒ…[@‚±‚±‚Å‚ÍGridView
+		 *  DateCellã®Viewã‚’ä½œæˆã—ã¦è¿”ã™ãŸã‚ã®ãƒ¡ã‚½ãƒƒãƒ‰
+		 *  @param int position ã‚»ãƒ«ã®ä½ç½®
+		 *  @param View convertView å‰ã«ä½¿ç”¨ã—ãŸView
+		 *  @param ViewGroup parent è¦ªãƒ“ãƒ¥ãƒ¼ã€€ã“ã“ã§ã¯GridView
 		 */
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if(convertView == null){
 				convertView = mLayoutInflater.inflate(R.layout.datecell,null);
 			}
-			// View‚ÌÅ¬‚Ì‚‚³‚ğİ’è‚·‚é
+			// Viewã®æœ€å°ã®é«˜ã•ã‚’è¨­å®šã™ã‚‹
 			convertView.setMinimumHeight(parent.getHeight()/NUM_ROWS-1);
 			TextView dayOfMonthView = (TextView)convertView.findViewById(R.id.dayOfMonth);
 			Calendar cal = (Calendar)mCalendar.clone();
@@ -616,24 +623,24 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 				dayOfMonthView.setBackgroundResource(R.color.gray);
 			}
 			TextView scheduleView = (TextView)convertView.findViewById(R.id.schedule);
-			// Queryƒpƒ‰ƒ[ƒ^‚Ìİ’è
+			// Queryãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®è¨­å®š
 			String[] projection = {EventInfo.TITLE};
-			// íœƒtƒ‰ƒO‚Ì‚Â‚¢‚Ä‚¢‚éƒf[ƒ^‚ÍŒŸõ‚µ‚È‚¢
+			// å‰Šé™¤ãƒ•ãƒ©ã‚°ã®ã¤ã„ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã¯æ¤œç´¢ã—ãªã„
 			String selection = EventInfo.DELETED + " = 0 and " + EventInfo.START_TIME+" LIKE ?";
 			String[] selectionArgs = {DateStrCls.dateFormat.format(cal.getTime())+"%"};
 			String sortOrder = EventInfo.START_TIME;
-			// Query‚ÌÀs
+			// Queryã®å®Ÿè¡Œ
 			Cursor c = mContentResolver.query(RESOLVER_URI,projection,selection,selectionArgs,sortOrder);
-			// Œ‹‰Ê‚Ì•¶š—ñ‚ğì¬‚µscheduleView‚ÉƒZƒbƒg
-			// StringBuilder(’Ç‰Á‰Â”\‚È•¶š—ñƒNƒ‰ƒXj
+			// çµæœã®æ–‡å­—åˆ—ã‚’ä½œæˆã—scheduleViewã«ã‚»ãƒƒãƒˆ
+			// StringBuilder(è¿½åŠ å¯èƒ½ãªæ–‡å­—åˆ—ã‚¯ãƒ©ã‚¹ï¼‰
 			StringBuilder sb = new StringBuilder();
 			while(c.moveToNext()){
-				// StringBuilder‚ÉƒXƒPƒWƒ…[ƒ‹‚Ìƒ^ƒCƒgƒ‹‚ğ’Ç‰Á
+				// StringBuilderã«ã‚¹ã‚±ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ã‚¿ã‚¤ãƒˆãƒ«ã‚’è¿½åŠ 
 				sb.append(c.getString(c.getColumnIndex(EventInfo.TITLE)));
 				sb.append("\n");
 			}
 			c.close();
-			// scheduleView‚É—\’è‚ÌƒŠƒXƒg‚ğ’Ç‰Á
+			// scheduleViewã«äºˆå®šã®ãƒªã‚¹ãƒˆã‚’è¿½åŠ 
 			scheduleView.setText( sb.toString());
 
 			return convertView;		

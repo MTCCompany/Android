@@ -16,41 +16,41 @@ import android.content.Intent;
 import android.database.Cursor;
 
 public class AlarmReceiver extends BroadcastReceiver {
-	// ƒAƒ‰[ƒ€‚ğÀs‚·‚éƒŠƒNƒGƒXƒgƒR[ƒh 
+	// ã‚¢ãƒ©ãƒ¼ãƒ ã‚’å®Ÿè¡Œã™ã‚‹ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚³ãƒ¼ãƒ‰ 
 	private static final int DO_ALARM = 0;
-	// ƒAƒ‰[ƒ€‚ğ’â~‚·‚éƒT[ƒrƒX‚ÌƒAƒNƒVƒ‡ƒ“
+	// ã‚¢ãƒ©ãƒ¼ãƒ ã‚’åœæ­¢ã™ã‚‹ã‚µãƒ¼ãƒ“ã‚¹ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 	public static final String ACTION_STOP_ALARM = "com.example.eventcalendar.service.stop";
-	// ƒAƒ‰[ƒ€‚ğŠJn‚·‚éƒT[ƒrƒX‚ÌƒAƒNƒVƒ‡ƒ“
+	// ã‚¢ãƒ©ãƒ¼ãƒ ã‚’é–‹å§‹ã™ã‚‹ã‚µãƒ¼ãƒ“ã‚¹ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 	public static final String ACTION_START_ALARM = "com.example.eventcalendar.service.start";
-	// NotificationManager‚Åg—p‚·‚éIDi“K“–‚È’lj
+	// NotificationManagerã§ä½¿ç”¨ã™ã‚‹IDï¼ˆé©å½“ãªå€¤ï¼‰
 	public static final int NOTIFICATION_ID = 0x10;
 
-	// ŠÔ‚ª‚­‚é‚Æ‚±‚Ìƒƒ\ƒbƒh‚ªƒR[ƒ‹‚³‚ê‚é
+	// æ™‚é–“ãŒãã‚‹ã¨ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ãŒã‚³ãƒ¼ãƒ«ã•ã‚Œã‚‹
 	public void onReceive(Context context, Intent intent) {
 		long alarm  = 0;
 		String action = intent.getAction();
 		if(action != null){
 			if(action.equals(Intent.ACTION_BOOT_COMPLETED)){
-				// Action ‚ªBOOT_COMPLETED‚¾‚Á‚½ê‡
+				// Action ãŒBOOT_COMPLETEDã ã£ãŸå ´åˆ
 				alarm = Calendar.getInstance().getTimeInMillis();
-				// Ä‹N“®‚ªÀ{‚³‚ê‚½‚Ì‚ÅAˆÈ‘O“o˜^‚µ‚½Alarm‚ªÁ‚¦‚Ä‚¢‚é‚Ì‚ÅADB‚ğXV‚µAlarm‚ğÄİ’è‚·‚é
+				// å†èµ·å‹•ãŒå®Ÿæ–½ã•ã‚ŒãŸã®ã§ã€ä»¥å‰ç™»éŒ²ã—ãŸAlarmãŒæ¶ˆãˆã¦ã„ã‚‹ã®ã§ã€DBã‚’æ›´æ–°ã—Alarmã‚’å†è¨­å®šã™ã‚‹
 				updateDbAlarm(context,alarm);
 				updateAlarm(context);
 			}else if(action.equals(ACTION_STOP_ALARM)){
-				// Action‚ªSTOP_ALARM‚¾‚Á‚½ê‡
-				// ƒm[ƒeƒBƒtƒBƒP[ƒVƒ‡ƒ“‚ğÁ‚·
+				// ActionãŒSTOP_ALARMã ã£ãŸå ´åˆ
+				// ãƒãƒ¼ãƒ†ã‚£ãƒ•ã‚£ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ¶ˆã™
 				NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 				manager.cancel(NOTIFICATION_ID);
-				// Ä¶‚ğ’â~
+				// å†ç”Ÿã‚’åœæ­¢
 				Intent serviceIntent = new Intent(context,AlarmService.class);
 				context.stopService(serviceIntent);
 			}else if(action.equals(ACTION_START_ALARM)){
-				// Action‚ªSTART_ALARM‚¾‚Á‚½ê‡
-				// Alarm‚È‚Ì‚ÅAAlarm‚ğŠJn
+				// ActionãŒSTART_ALARMã ã£ãŸå ´åˆ
+				// Alarmæ™‚åˆ»ãªã®ã§ã€Alarmã‚’é–‹å§‹
 				alarm = intent.getLongExtra(EventInfo.ALARM,0);
-				// ƒm[ƒeƒBƒtƒBƒP[ƒVƒ‡ƒ“‚ğ•\¦
+				// ãƒãƒ¼ãƒ†ã‚£ãƒ•ã‚£ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’è¡¨ç¤º
 				showNotification(context,alarm);
-				// ƒf[ƒ^ƒx[ƒX‚ğXV‚µAŸ‚ÌƒAƒ‰[ƒ€‚ğƒZƒbƒg
+				// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ›´æ–°ã—ã€æ¬¡ã®ã‚¢ãƒ©ãƒ¼ãƒ ã‚’ã‚»ãƒƒãƒˆ
 				updateDbAlarm(context,alarm);
 				updateAlarm(context);
 			}
@@ -58,36 +58,36 @@ public class AlarmReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * ’Ê’mƒo[‚Éƒm[ƒeƒBƒtƒBƒP[ƒVƒ‡ƒ“‚ğ•\¦‚·‚é
+	 * é€šçŸ¥ãƒãƒ¼ã«ãƒãƒ¼ãƒ†ã‚£ãƒ•ã‚£ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’è¡¨ç¤ºã™ã‚‹
 	 *
-	 * @param Context ƒRƒ“ƒeƒLƒXƒg
-	 * @param long alarm ƒAƒ‰[ƒ€
+	 * @param Context ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
+	 * @param long alarm ã‚¢ãƒ©ãƒ¼ãƒ æ™‚åˆ»
 	 */
 	private void showNotification(Context context, long alarm) {
 		if(alarm == 0){
 			return;
 		}
-		// ƒf[ƒ^ƒx[ƒX‚©‚çİ’è‚µ‚Ä‚¢‚½Alarm‚©‚ç‚»‚Ì‚ÉƒAƒ‰[ƒ€‚ğƒZƒbƒg‚µ‚Ä‚¢‚½ƒCƒxƒ“ƒgæ“¾
+		// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰è¨­å®šã—ã¦ã„ãŸAlarmæ™‚åˆ»ã‹ã‚‰ãã®æ™‚åˆ»ã«ã‚¢ãƒ©ãƒ¼ãƒ ã‚’ã‚»ãƒƒãƒˆã—ã¦ã„ãŸã‚¤ãƒ™ãƒ³ãƒˆå–å¾—
 		ContentResolver contentResolver = context.getContentResolver();
 		String selection = EventInfo.DELETED + " = 0  and " + EventInfo.ALARM + " = " + alarm;
 		Cursor c = contentResolver.query(EventCalendarActivity.RESOLVER_URI, null, selection, null, null);
 		while(c.moveToNext()){
-			// ƒCƒxƒ“ƒg‚Í•¡”‘¶İ‚·‚é‰Â”\«‚ª—L‚é‚Ì‚ÅA•¡”‰ñˆ—
+			// ã‚¤ãƒ™ãƒ³ãƒˆã¯è¤‡æ•°å­˜åœ¨ã™ã‚‹å¯èƒ½æ€§ãŒæœ‰ã‚‹ã®ã§ã€è¤‡æ•°å›å‡¦ç†
 			String title = context.getString(R.string.notification);
 			String text = c.getString(c.getColumnIndex(EventInfo.TITLE));
 			String message = title +":"+ text ;
-			// ƒCƒxƒ“ƒg‚Ìƒ^ƒCƒgƒ‹‚ğ’Ê’m‚É•\¦
+			// ã‚¤ãƒ™ãƒ³ãƒˆã®ã‚¿ã‚¤ãƒˆãƒ«ã‚’é€šçŸ¥ã«è¡¨ç¤º
 			Notification notification = new Notification(R.drawable.icon,message,alarm);
-			// Á‹‚³‚ê‚é‚ÆAlarm‚ğ’â~‚Å‚«‚È‚¢‚Ì‚ÅAˆêŠ‡Á‹‚Å‚«‚È‚¢‚æ‚¤‚É‚·‚é
+			// æ¶ˆå»ã•ã‚Œã‚‹ã¨Alarmã‚’åœæ­¢ã§ããªã„ã®ã§ã€ä¸€æ‹¬æ¶ˆå»ã§ããªã„ã‚ˆã†ã«ã™ã‚‹
 			notification.flags =Notification.FLAG_NO_CLEAR;
-			// ƒm[ƒeƒBƒtƒBƒP[ƒVƒ‡ƒ“‚ÌƒAƒCƒeƒ€‚ğƒ^ƒbƒ`‚³‚ê‚½‚Æ‚«‚ÍAACTION_STOP_ALARM‚ğ”­s‚·‚é—l‚Éİ’è
+			// ãƒãƒ¼ãƒ†ã‚£ãƒ•ã‚£ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚¿ãƒƒãƒã•ã‚ŒãŸã¨ãã¯ã€ACTION_STOP_ALARMã‚’ç™ºè¡Œã™ã‚‹æ§˜ã«è¨­å®š
 			Intent intent = new Intent(context,AlarmReceiver.class);
 			intent.setAction(ACTION_STOP_ALARM);
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
 			notification.setLatestEventInfo(context,title,text,pendingIntent);
 			NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 			manager.notify(NOTIFICATION_ID,notification);
-			// ƒAƒ‰[ƒ€‰¹‚ğ–Â‚ç‚·ƒT[ƒrƒX‚ğ‹N“®
+			// ã‚¢ãƒ©ãƒ¼ãƒ éŸ³ã‚’é³´ã‚‰ã™ã‚µãƒ¼ãƒ“ã‚¹ã‚’èµ·å‹•
 			Intent serviceIntent = new Intent(context,AlarmService.class);
 			context.startService(serviceIntent);
 		}
@@ -95,30 +95,30 @@ public class AlarmReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * ƒf[ƒ^ƒx[ƒX‚ğŒŸõ‚µAÅV‚ÌƒAƒ‰[ƒ€î•ñ‚ğİ’è‚·‚é
+	 * ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ¤œç´¢ã—ã€æœ€æ–°ã®ã‚¢ãƒ©ãƒ¼ãƒ æƒ…å ±ã‚’è¨­å®šã™ã‚‹
 	 *
 	 * @param Context
-	 * @param long alarm ¡’–Ú‚µ‚Ä‚¢‚éAlarm
+	 * @param long alarm ä»Šæ³¨ç›®ã—ã¦ã„ã‚‹Alarmæ™‚åˆ»
 	 */
 	public void updateDbAlarm(Context context,long alarm){
 		if(alarm == 0){
 			return;
 		}
 		ContentResolver contentResolver = context.getContentResolver();
-		// Alarm‚ğİ’è‚µ‚Ä‚¢‚éƒf[ƒ^‚Ì’†‚ÅA¡’–Ú‚µ‚Ä‚¢‚éˆÈ‘O‚Ì’l‚ğ‚Á‚Ä‚¢‚é‚à‚Ì‚ğŒŸõ
+		// Alarmã‚’è¨­å®šã—ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã®ä¸­ã§ã€ä»Šæ³¨ç›®ã—ã¦ã„ã‚‹æ™‚åˆ»ä»¥å‰ã®å€¤ã‚’æŒã£ã¦ã„ã‚‹ã‚‚ã®ã‚’æ¤œç´¢
 		String selection = EventInfo.DELETED + " = 0  and " 
 				+ EventInfo.ALARM + " <> 0 and "
 				+ EventInfo.ALARM + " <= " + alarm;
 		Cursor c = contentResolver.query(EventCalendarActivity.RESOLVER_URI, null, selection, null, null);
 		ArrayList<EventInfo> events = new ArrayList<EventInfo>();
-		// Alarm‚ª‰ß‹‚É‚È‚Á‚Ä‚µ‚Ü‚Á‚½EventInfo‚ğƒŠƒXƒg‚Éæ“¾
+		// Alarmæ™‚åˆ»ãŒéå»ã«ãªã£ã¦ã—ã¾ã£ãŸEventInfoã‚’ãƒªã‚¹ãƒˆã«å–å¾—
 		while(c.moveToNext()){
 			EventInfo eventInfo  = new EventInfo(contentResolver);
 			eventInfo.setValues(c);
 			events.add(eventInfo);
 		}
 		c.close();
-		// EventInfo‚ÌAlarmî•ñ‚ğXV‚µAƒf[ƒ^ƒx[ƒX‚ğXV
+		// EventInfoã®Alarmæƒ…å ±ã‚’æ›´æ–°ã—ã€ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ›´æ–°
 		for(EventInfo eventInfo : events){
 			ContentValues cv = eventInfo.getValues();
 			selection = EventInfo.ID + " = " + eventInfo.getId();
@@ -127,32 +127,32 @@ public class AlarmReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * Alarmİ’è‚ğXV‚·‚é
+	 * Alarmè¨­å®šã‚’æ›´æ–°ã™ã‚‹
 	 *
 	 * @param Context
 	 */
 	public static void updateAlarm(Context context){
-		// ’¼‹ß‚ÌAlarm‚ğ‚Á‚Ä‚¢‚éEvent‚ğŒŸõ
+		// ç›´è¿‘ã®Alarmæ™‚åˆ»ã‚’æŒã£ã¦ã„ã‚‹Eventã‚’æ¤œç´¢
 		ContentResolver contentResolver = context.getContentResolver();
 		long now  = Calendar.getInstance().getTimeInMillis();
 		String[] projection = {EventInfo.ALARM,EventInfo.TITLE};
 		String selection = EventInfo.DELETED + " = 0 and "+EventInfo.ALARM + " > " + now;
 		String sortOrder = EventInfo.ALARM;
 		Cursor c = contentResolver.query(EventCalendarActivity.RESOLVER_URI, projection, selection, null, sortOrder);
-		// ƒZƒbƒg‚·‚é‚Ì‚Í1Œ‚Å‚¢‚¢‚Ì‚Å@while‚Å‚Í‰ñ‚³‚È‚¢
+		// ã‚»ãƒƒãƒˆã™ã‚‹ã®ã¯1ä»¶ã§ã„ã„ã®ã§ã€€whileã§ã¯å›ã•ãªã„
 		if(c.moveToNext()){
 			AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
 			long alarm = c.getLong(c.getColumnIndex(EventInfo.ALARM));
 			GregorianCalendar cal = new GregorianCalendar();
-			// Alarm‚ğ‚È‚ç‚·‚ğƒZƒbƒg
+			// Alarmã‚’ãªã‚‰ã™æ™‚åˆ»ã‚’ã‚»ãƒƒãƒˆ
 			cal.setTimeInMillis(alarm);
 			Intent intent = new Intent(context,AlarmReceiver.class);
 			intent.putExtra(EventInfo.ALARM,alarm);
 			intent.setAction(ACTION_START_ALARM);
 			PendingIntent alarmReceiver = PendingIntent.getBroadcast(context, DO_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			// ‚·‚Å‚ÉAlarmƒCƒxƒ“ƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚½ê‡‚¤‚Ü‚­“®ì‚µ‚È‚¢‚Ì‚ÅA‚·‚×‚Äíœ
+			// ã™ã§ã«Alarmã‚¤ãƒ™ãƒ³ãƒˆãŒç™»éŒ²ã•ã‚Œã¦ã„ãŸå ´åˆã†ã¾ãå‹•ä½œã—ãªã„ã®ã§ã€ã™ã¹ã¦å‰Šé™¤
 			alarmManager.cancel(alarmReceiver);
-			// V‚µ‚¢AlarmƒCƒxƒ“ƒg‚ğ“o˜^
+			// æ–°ã—ã„Alarmã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™»éŒ²
 			alarmManager.set(AlarmManager.RTC_WAKEUP,alarm,alarmReceiver);
 		}
 		c.close();

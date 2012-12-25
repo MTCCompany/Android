@@ -1,11 +1,13 @@
 package com.example.eventcalendar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -14,9 +16,9 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 public class EventInfo {
-	// ƒf[ƒ^ƒx[ƒX–¼
+	// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹å
 	public final static String DB_NAME = "events";
-	// ƒtƒB[ƒ‹ƒh–¼
+	// ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰å
 	public final static String ID = BaseColumns._ID;
 	public final static String CHANGED = "changed";
 	public final static String DELETED = "deleted";
@@ -40,17 +42,17 @@ public class EventInfo {
 	public final static String ALARM = "alarm";
 	public final static String ALARM_LIST = "alarm_list";
 
-	// ˆêŠÔ‚Ì•ª”
+	// ä¸€æ™‚é–“ã®åˆ†æ•°
 	public final static int HOUR_BY_MINUTES = 60;
-	// ˆê•ª‚Ì•b”
+	// ä¸€åˆ†ã®ç§’æ•°
 	public final static int MINUTE_BY_SECONDS = 60;
-	//@1•b‚Ìƒ~ƒŠ•b”
+	//ã€€1ç§’ã®ãƒŸãƒªç§’æ•°
 	public final static int SECOND_BY_MILLI = 1000;
-	// 1•ª‚Ìƒ~ƒŠ•b”
+	// 1åˆ†ã®ãƒŸãƒªç§’æ•°
 	public final static int MINUTE_BY_MILLI = MINUTE_BY_SECONDS*SECOND_BY_MILLI;
-	// ƒf[ƒ^ƒx[ƒXˆ—‚Ìˆ×‚ÌResolver
+	// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹å‡¦ç†ã®ç‚ºã®Resolver
 	private ContentResolver mContentResolver = null;
-	// ƒŒƒR[ƒh‚ğ•Û‚·‚éˆ×‚Ìƒƒ“ƒo•Ï”
+	// ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’ä¿æŒã™ã‚‹ç‚ºã®ãƒ¡ãƒ³ãƒå¤‰æ•°
 	private long mId = 0;
 	private long mDeleted = 0;
 	private long mModified = 0;
@@ -69,10 +71,10 @@ public class EventInfo {
 	private String mRecurrence = null;
 	private long mAlarm = 0;
 	private HashMap<String,ArrayList<String>> mAlarmMap = null;
-	
+
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	 *  ƒRƒ“ƒeƒ“ƒgƒŠƒ]ƒ‹ƒo‚ğİ’è
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	 *  ã‚³ãƒ³ãƒ†ãƒ³ãƒˆãƒªã‚¾ãƒ«ãƒã‚’è¨­å®š
 	 * @param resolver
 	 */
 	public EventInfo(ContentResolver resolver) {
@@ -81,15 +83,15 @@ public class EventInfo {
 
 	/**
 	 * toString
-	 *  ƒf[ƒ^ƒx[ƒX‚ÉŠÜ‚Ü‚ê‚éî•ñ‚ğˆê‚Â‚Ì•¶š—ñ‚Æ‚µ‚Äo—Í
+	 *  ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«å«ã¾ã‚Œã‚‹æƒ…å ±ã‚’ä¸€ã¤ã®æ–‡å­—åˆ—ã¨ã—ã¦å‡ºåŠ›
 	 */
 	public String toString(){
 		if(mStart.get(Calendar.HOUR_OF_DAY) == 0 && mStart.get(Calendar.MINUTE) == 0){
 			GregorianCalendar startCal = (GregorianCalendar)mStart.clone();
 			startCal.add(Calendar.DAY_OF_MONTH, 1);
 			if(startCal.equals(mEnd)){
-				// ŠJn‚ª00:00‚ÅI—¹“ú‚ª—‚“ú‚Ì00:00‚Ìê‡
-				// I“ú‚Ì—\’è‚Æ”»’f‚µ‚ÄŠJn“ú‚Ì‚İ•\¦‚·‚é
+				// é–‹å§‹æ™‚åˆ»ãŒ00:00ã§çµ‚äº†æ—¥æ™‚ãŒç¿Œæ—¥ã®00:00ã®å ´åˆ
+				// çµ‚æ—¥ã®äºˆå®šã¨åˆ¤æ–­ã—ã¦é–‹å§‹æ—¥ã®ã¿è¡¨ç¤ºã™ã‚‹
 				return getTitle()+"\n"
 				+getStartDateString()+"\n"
 				+getWhere()+"\n"
@@ -103,7 +105,7 @@ public class EventInfo {
 		+getContent();
 	}
 
-	// ‚±‚±‚©‚ç@setter/getter
+	// ã“ã“ã‹ã‚‰ã€€setter/getter
 	public void setId(long mId) {
 		this.mId = mId;
 	}
@@ -181,7 +183,7 @@ public class EventInfo {
 		return mContent;
 	}
 
-	// ‚±‚±‚©‚ç‚Í@ƒƒ“ƒo•Ï”‚Ìsetter/getterŠÖ”
+	// ã“ã“ã‹ã‚‰ã¯ã€€ãƒ¡ãƒ³ãƒå¤‰æ•°ã®setter/getteré–¢æ•°
 	public void setDeleted(long mDeleted) {
 		this.mDeleted = mDeleted;
 	}
@@ -219,7 +221,7 @@ public class EventInfo {
 	}
 
 	/**
-	 * mUpdated‚É•¶š—ñ‚Å’l‚ğİ’è‚µ‚Ü‚·
+	 * mUpdatedã«æ–‡å­—åˆ—ã§å€¤ã‚’è¨­å®šã—ã¾ã™
 	 * @param date
 	 */
 	public void setUpdated(String date) {
@@ -271,10 +273,10 @@ public class EventInfo {
 	}
 
 	/**
-	 * EventId‚Í
+	 * EventIdã¯
 	 * http://www.google.com/calendar/feeds/default/events/xxxxxxxxxxxxxxxxxxxxxxxxx
-	 * ‚Ì—l‚ÉURL‚ÌŒ`‚É‚È‚Á‚Ä‚¢‚Ü‚·‚ªÀÛ‚É‚ÍAxxxx‚Ì•”•ª‚Ì‚İ‚ªId‚È‚Ì‚ÅA
-	 * ‚±‚Ì•”•ª‚Ì‚İ‚ğæ‚èo‚µ‚Ü‚·B
+	 * ã®æ§˜ã«URLã®å½¢ã«ãªã£ã¦ã„ã¾ã™ãŒå®Ÿéš›ã«ã¯ã€xxxxã®éƒ¨åˆ†ã®ã¿ãŒIdãªã®ã§ã€
+	 * ã“ã®éƒ¨åˆ†ã®ã¿ã‚’å–ã‚Šå‡ºã—ã¾ã™ã€‚
 	 * 
 	 * @param calendarId
 	 */
@@ -308,63 +310,63 @@ public class EventInfo {
 	}
 
 	/**
-	 * EventInfo‚Ìƒƒ“ƒo•Ï”‚ÉŠî‚Ã‚¢‚Äƒf[ƒ^ƒx[ƒX‚ğXV‚·‚é
+	 * EventInfoã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã«åŸºã¥ã„ã¦ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ›´æ–°ã™ã‚‹
 	 */
 	public void updateDB(){
-		// mRecurrence‚ª‘¶İ‚·‚éƒf[ƒ^‚É‚Â‚¢‚Ä‚Í‚±‚ÌƒAƒvƒŠ‚Å‚Í–³‹‚·‚é
+		// mRecurrenceãŒå­˜åœ¨ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã«ã¤ã„ã¦ã¯ã“ã®ã‚¢ãƒ—ãƒªã§ã¯ç„¡è¦–ã™ã‚‹
 		if(mRecurrence != null){
 			return;
 		}
 		Log.d("CALENDAR","UpdateDB"+mTitle+":"+getStartTimeString());
-		// ƒ^ƒCƒgƒ‹‚ÆXV“ú‚ğæ“¾‚·‚é
+		// ã‚¿ã‚¤ãƒˆãƒ«ã¨æ›´æ–°æ—¥æ™‚ã‚’å–å¾—ã™ã‚‹
 		String[] projection={TITLE,UPDATED};
 		String selection = EVENT_ID+" = ?";
 		String[] selectionArgs = {mEventId};
-		// “Ç‚İ‚Ü‚ê‚½ƒf[ƒ^‚ÌIDî•ñ‚ğ‚à‚Æ‚Éƒf[ƒ^ƒx[ƒX‚ğŒŸõ
+		// èª­ã¿è¾¼ã¾ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã®IDæƒ…å ±ã‚’ã‚‚ã¨ã«ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ¤œç´¢
 		Cursor c = mContentResolver.query(EventCalendarActivity.RESOLVER_URI, 
 				projection, selection, selectionArgs, null);
 		if(c.moveToNext()){
-			// ‚·‚Å‚É‘¶İ‚µ‚Ä‚¢‚éƒf[ƒ^‚Ìê‡‚ÍXVˆ—
+			// ã™ã§ã«å­˜åœ¨ã—ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã®å ´åˆã¯æ›´æ–°å‡¦ç†
 			String dbUpdated = c.getString(c.getColumnIndex(UPDATED));
 			c.close();
 			GregorianCalendar cal = DateStrCls.toCalendar(dbUpdated);
-			// XV“ú‚ğ”äŠr‚·‚é(Calendar#compareTo)
-			//  “™‚µ‚¯‚ê‚ÎA0
-			//  GoogleƒJƒŒƒ“ƒ_[‚ÌXV“ú(mUpdated) ‚ªV‚µ‚¢ê‡‚Í 1
-			//  ƒf[ƒ^ƒx[ƒX‚ÌXV“ú(cal)‚ªV‚µ‚¢ê‡‚Í -1
+			// æ›´æ–°æ—¥æ™‚ã‚’æ¯”è¼ƒã™ã‚‹(Calendar#compareTo)
+			//  ç­‰ã—ã‘ã‚Œã°ã€0
+			//  Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®æ›´æ–°æ—¥æ™‚(mUpdated) ãŒæ–°ã—ã„å ´åˆã¯ 1
+			//  ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã®æ›´æ–°æ—¥æ™‚(cal)ãŒæ–°ã—ã„å ´åˆã¯ -1
 			int comp = mUpdated.compareTo(cal);
 			if(comp==0){
-				// ƒAƒbƒvƒf[ƒg‚Ì“ú‚ª“™‚µ‚¢
+				// ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã®æ—¥æ™‚ãŒç­‰ã—ã„
 			}else if(comp>0){
-				// GoogleƒJƒŒƒ“ƒ_[‘¤‚ªV‚µ‚¢‚Ì‚ÅXV‚·‚éB
+				// Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼å´ãŒæ–°ã—ã„ã®ã§æ›´æ–°ã™ã‚‹ã€‚
 				if(isCanceled()){
-					// GoogleƒJƒŒƒ“ƒ_[‚Åíœ‚³‚ê‚½‚à‚Ì‚È‚çAƒf[ƒ^ƒx[ƒX‚©‚çíœ
+					// Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã§å‰Šé™¤ã•ã‚ŒãŸã‚‚ã®ãªã‚‰ã€ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰å‰Šé™¤
 					mContentResolver.delete(EventCalendarActivity.RESOLVER_URI, selection, selectionArgs);
 				}else{
 					mContentResolver.update(EventCalendarActivity.RESOLVER_URI,getValues(),selection,selectionArgs);
 				}
 			}else if(comp<0){
-				// DB‘¤‚ªV‚µ‚¯‚ê‚ÎŒã‚ÅGoogleƒJƒŒƒ“ƒ_[‚ÉƒAƒbƒvƒ[ƒh‚·‚é‚½‚ß‚Érecord‚ÉMODIFIEDƒtƒ‰ƒO‚ğƒZƒbƒg
+				// DBå´ãŒæ–°ã—ã‘ã‚Œã°å¾Œã§Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã«ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ãŸã‚ã«recordã«MODIFIEDãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ
 				ContentValues cv = new ContentValues();
 				cv.put(MODIFIED,1);
 				mContentResolver.update(EventCalendarActivity.RESOLVER_URI,cv,selection,selectionArgs);
 			}
 		}else{
-			// DB‚É“¯‚¶ƒf[ƒ^‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚Æ‚«
+			// DBã«åŒã˜ãƒ‡ãƒ¼ã‚¿ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã¨ã
 			c.close();
 			if(isCanceled()){
-				// GoogleƒJƒŒƒ“ƒ_[‘¤‚Åíœ‚³‚ê‚Ä‚¢‚ê‚Î‰½‚à‚µ‚È‚¢
+				// Googleã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼å´ã§å‰Šé™¤ã•ã‚Œã¦ã„ã‚Œã°ä½•ã‚‚ã—ãªã„
 				return;
 			}
-			// V‹Kƒf[ƒ^‚Æ‚µ‚ÄInsert
+			// æ–°è¦ãƒ‡ãƒ¼ã‚¿ã¨ã—ã¦Insert
 			mContentResolver.insert(EventCalendarActivity.RESOLVER_URI, getValues());
 		}
 	}
 
 	/**
-	 * EventInfo‚Ìƒf[ƒ^‚ğŒ³‚ÉContentValues ‚ğì¬‚·‚éB
+	 * EventInfoã®ãƒ‡ãƒ¼ã‚¿ã‚’å…ƒã«ContentValues ã‚’ä½œæˆã™ã‚‹ã€‚
 	 *
-	 * @return ContentValues resolver‚Ìupdate,insert‚È‚Ç‚Åg—p‚·‚éContentValuesƒNƒ‰ƒX
+	 * @return ContentValues resolverã®update,insertãªã©ã§ä½¿ç”¨ã™ã‚‹ContentValuesã‚¯ãƒ©ã‚¹
 	 */
 	public ContentValues getValues(){
 		ContentValues cv = new ContentValues();
@@ -382,17 +384,17 @@ public class EventInfo {
 		cv.put(EVENT_STATUS, mEventStatus);
 	    cv.put(EVENT_ID, mEventId);
 		cv.put(ETAG, mEtag);
-		// AlarmƒŠƒXƒg‚ğ’Ç‰Á
+		// Alarmãƒªã‚¹ãƒˆã‚’è¿½åŠ 
 		cv.put(ALARM_LIST, getAlarmMapString());
-		// mAlarmList‚Ì’l‚ğŒ³‚É’¼‹ß‚ÌƒAƒ‰[ƒ€ŒvZ‚·‚é
+		// mAlarmListã®å€¤ã‚’å…ƒã«ç›´è¿‘ã®ã‚¢ãƒ©ãƒ¼ãƒ è¨ˆç®—ã™ã‚‹
 		calcAlarm();
-		// ’¼‹ß‚ÌAlarm‚Ì’l‚ğ“o˜^
+		// ç›´è¿‘ã®Alarmã®å€¤ã‚’ç™»éŒ²
 		cv.put(ALARM, mAlarm);
 		return cv;
 	}
 
 	/**
-	 * Cursor‚©‚çEventInfo‚Ì’l‚ğƒZƒbƒg‚·‚é
+	 * Cursorã‹ã‚‰EventInfoã®å€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void setValues(Cursor c){
 		mId = c.getLong(c.getColumnIndex(ID));
@@ -411,9 +413,9 @@ public class EventInfo {
 		mEventStatus = c.getString(c.getColumnIndex(EVENT_STATUS));
 	    mEventId = c.getString(c.getColumnIndex(EVENT_ID));
 		mEtag = c.getString(c.getColumnIndex(ETAG));
-		// Alarm‚ÌƒŠƒXƒg‚ğİ’è‚·‚é
+		// Alarmã®ãƒªã‚¹ãƒˆã‚’è¨­å®šã™ã‚‹
 		setAlarmMap(c.getString(c.getColumnIndex(ALARM_LIST)));
-		// Alaram‚Ì’l‚ğŒvZ‚µ’¼‚·
+		// Alaramã®å€¤ã‚’è¨ˆç®—ã—ç›´ã™
 		calcAlarm();
 		mRecurrence = null;
 	}
@@ -423,9 +425,9 @@ public class EventInfo {
 	}
 
 	/**
-	 * ƒXƒ^[ƒg‚Ì‰½•ª‘O‚©‚Æ‚¢‚¤’l‚©‚çÀÛ‚Ìƒ~ƒŠ•b‚Ì’l‚ğŒvZ‚µ‚ÄƒZƒbƒg‚·‚éB
+	 * ã‚¹ã‚¿ãƒ¼ãƒˆæ™‚åˆ»ã®ä½•åˆ†å‰ã‹ã¨ã„ã†å€¤ã‹ã‚‰å®Ÿéš›ã®ãƒŸãƒªç§’ã®å€¤ã‚’è¨ˆç®—ã—ã¦ã‚»ãƒƒãƒˆã™ã‚‹ã€‚
 	 *
-	 * @param String before ƒAƒ‰[ƒ€İ’è‚Ì•ª”
+	 * @param String before ã‚¢ãƒ©ãƒ¼ãƒ è¨­å®šã®åˆ†æ•°
 	 */
 	public void setAlarmBefore(String before) {
 		if(before == null || before.equals("")){
@@ -439,10 +441,10 @@ public class EventInfo {
 	}
 
 	/**
-	 * Alarm Map‚É’l‚ğ’Ç‰Á‚·‚éB
+	 * Alarm Mapã«å€¤ã‚’è¿½åŠ ã™ã‚‹ã€‚
 	 *
-	 * @param String key    ƒL[
-	 * @param String value  ’l
+	 * @param String key    ã‚­ãƒ¼
+	 * @param String value  å€¤
 	 */
 	public void addToAlarmMap(String key,String value) {
 		if(key == null || key.equals("")){
@@ -452,14 +454,14 @@ public class EventInfo {
 			value = "";
 		}
 		if(mAlarmMap == null){
-			// ƒ}ƒbƒv‚ª‘¶İ‚µ‚È‚¢ê‡‚ÍHashMap‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬
+			// ãƒãƒƒãƒ—ãŒå­˜åœ¨ã—ãªã„å ´åˆã¯HashMapã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ
 			mAlarmMap = new HashMap<String,ArrayList<String>>();
 		}
 		if(mAlarmMap.containsKey(key)){
-			// Map‚ÉKey‚ª‘¶İ‚µ‚½‚çA‚»‚ÌKey‚É’l‚ğ’Ç‰Á
+			// Mapã«KeyãŒå­˜åœ¨ã—ãŸã‚‰ã€ãã®Keyã«å€¤ã‚’è¿½åŠ 
 			mAlarmMap.get(key).add(value);
 		}else{
-			// Map‚ÉKey‚ª‘¶İ‚µ‚È‚¢‚Ì‚ÅKey‚ÆList‚ÌƒZƒbƒg‚ğ’Ç‰Á‚·‚éB
+			// Mapã«KeyãŒå­˜åœ¨ã—ãªã„ã®ã§Keyã¨Listã®ã‚»ãƒƒãƒˆã‚’è¿½åŠ ã™ã‚‹ã€‚
 			ArrayList<String>al = new ArrayList<String>();
 			al.add(value);
 			mAlarmMap.put(key, al);
@@ -471,9 +473,9 @@ public class EventInfo {
 	}
 
 	/**
-	 * AlarmMap‚ğ•¶š—ñ‚Åæ‚èo‚·
+	 * AlarmMapã‚’æ–‡å­—åˆ—ã§å–ã‚Šå‡ºã™
 	 *
-	 * @return String Alarm‚Ì’l‚ğ‚Á‚½•¶š—ñ
+	 * @return String Alarmã®å€¤ã‚’æŒã£ãŸæ–‡å­—åˆ—
 	 */
 	public String getAlarmMapString(){
 		if(mAlarmMap == null || mAlarmMap.isEmpty()){
@@ -491,9 +493,9 @@ public class EventInfo {
 	}
 
 	/**
-	 * Alarm‚Ì•¶š—ñ‚©‚çMap‚É’l‚ğİ’è‚·‚é
+	 * Alarmã®æ–‡å­—åˆ—ã‹ã‚‰Mapã«å€¤ã‚’è¨­å®šã™ã‚‹
 	 *
-	 * @param String alarmî•ñ‚Ì•¶š—ñ
+	 * @param String alarmæƒ…å ±ã®æ–‡å­—åˆ—
 	 */
 	public void setAlarmMap(String s){
 		if(s==null || s.equals("")){
@@ -508,7 +510,7 @@ public class EventInfo {
 		}
 	}
 	/**
-	 * Alarm‚Ìƒf[ƒ^‚ğŒvZ‚µ‚ÄA’¼‹ß‚ÌAlarm‚Ì’l‚ğƒZƒbƒg‚·‚é
+	 * Alarmã®ãƒ‡ãƒ¼ã‚¿ã‚’è¨ˆç®—ã—ã¦ã€ç›´è¿‘ã®Alarmã®å€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void calcAlarm(){
 		mAlarm = 0;
