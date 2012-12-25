@@ -16,7 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class CalendarHttpClient {
 	// HTTP処理が成功したかどうかを保持するメンバ変数
-	private boolean mHttpSucceeded = false;
+	public boolean mHttpSucceeded = false;
 	
 	/**
 	 * Http Delete処理

@@ -96,11 +96,11 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 	private static final String ACCESS_TOKEN_EXPIRE = "access_token_expire";
 
 	// クライアントシークレット　Google APISから取得
-	public static final String CLIENT_SECRET = "uo9qNI9mUYVN_DA9tYp31I_w";
+	public static final String CLIENT_SECRET = "1ET09oOy2CEezagy8lmOZdNe";
 	// OAUTH用URL
 	public static final String OAUTH_URL = "https://accounts.google.com/o/oauth2/auth";
 	// クライアントID　Google APISから取得
-	public static final String CLIENT_ID = "60552627438.apps.googleusercontent.com";
+	public static final String CLIENT_ID = "155205884318.apps.googleusercontent.com";
 	// リダイレクトURI　Google APIから取得
 	public static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 	// カレンダーのスコープ
@@ -330,8 +330,6 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 	}
 	// カレンダーAPIに特定のFeedではないデータにアクセスするためのURL
 	public static final String DEFAULT_URL = "https://www.google.com/calendar/feeds/default/private/full";
-	// HTTP処理が成功したかどうかを保持するメンバ変数
-	private boolean mHttpSucceeded = false;
 	/**
 	 * Googleカレンダーにデータをアップロードする
 	 */
@@ -368,7 +366,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 			// insert用のデータを作成しPOSTして結果を取得
 			// 結果をparseして新しいデータとして登録
 			cp.parse(mCalendarHttpClient.httpPost(DEFAULT_URL+"?oauth_token="+mAccessToken,cp.insertSerializer(e)));
-			if(mHttpSucceeded){
+			if(mCalendarHttpClient.mHttpSucceeded){
 				// 古いデータを削除
 				selection = EventInfo.ID + " = " + e.getId();
 				mContentResolver.delete(RESOLVER_URI, selection, null);
@@ -385,7 +383,7 @@ public class EventCalendarActivity extends Activity implements OnClickListener{
 		for(EventInfo e : deleteEvents){
 			// 編集用URLを使って、httpDeleteの処理
 			mCalendarHttpClient.httpDelete(e.getEditUrl()+"?oauth_token="+mAccessToken);
-			if(mHttpSucceeded){
+			if(mCalendarHttpClient.mHttpSucceeded){
 				// データベースからも削除
 				selection = EventInfo.ID + " = " + e.getId();
 				mContentResolver.delete(RESOLVER_URI, selection, null);
