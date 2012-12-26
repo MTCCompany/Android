@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" 
+  android:orientation="vertical">
+  <TextView android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:text="@string/pastetext" 
+    android:layout_gravity="center_horizontal" 
+    android:id="@+id/textView2">
+  </TextView>
+  <LinearLayout android:layout_height="wrap_content" 
+    android:id="@+id/linearLayout1" 
+    android:layout_width="fill_parent">
+    <TextView android:id="@+id/textView1" 
+      android:text="@string/oauthcode" 
+      android:layout_height="wrap_content" 
+      android:layout_width="wrap_content">
+    </TextView>
+    <EditText android:id="@+id/authCode" 
+      android:layout_height="wrap_content" 
+      android:layout_width="fill_parent">
+    </EditText>
+  </LinearLayout>
+  <RelativeLayout android:layout_height="wrap_content" 
+    android:layout_width="fill_parent" 
+    android:id="@+id/relativeLayout1">
+    <Button android:layout_height="wrap_content" 
+      android:layout_width="wrap_content" 
+      android:id="@+id/discardCode" 
+      android:text="@string/discard">
+    </Button>
+    <Button android:layout_height="wrap_content" 
+      android:id="@+id/saveCode" 
+      android:text="@string/save" 
+      android:layout_width="wrap_content" 
+      android:layout_alignParentRight="true">
+    </Button>
+  </RelativeLayout>
+</LinearLayout>

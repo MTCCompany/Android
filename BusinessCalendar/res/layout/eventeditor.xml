@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" 
+  android:orientation="vertical">
+  <ScrollView android:id="@+id/ScrollView01"
+        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:layout_weight="1">        
+  <LinearLayout android:id="@+id/linearLayout1"
+          android:layout_width="fill_parent" 
+          android:layout_height="fill_parent"
+          android:orientation="vertical">
+    <EditText android:id="@+id/title"
+          android:layout_width="fill_parent" 
+          android:layout_height="wrap_content" 
+          android:hint="@string/title"
+          android:text="">
+    </EditText>
+    <TextView android:text="@string/startTime" 
+            android:id="@+id/TextView01" 
+            android:textSize="16sp" 
+            android:layout_height="wrap_content" 
+            android:layout_width="wrap_content">
+     </TextView>
+     <LinearLayout android:id="@+id/linearLayout2"
+          android:layout_width="fill_parent" 
+          android:layout_height="wrap_content">
+      <TextView android:text="TextView" 
+            android:id="@+id/startDate" 
+            android:textSize="24sp" 
+            android:layout_height="wrap_content" 
+            android:layout_width="wrap_content">
+      </TextView>
+      <TextView android:layout_marginLeft="20dp" 
+            android:text="TextView" 
+            android:id="@+id/startTime" 
+            android:textSize="24sp" 
+            android:layout_height="wrap_content" 
+            android:layout_width="wrap_content">
+      </TextView>
+    </LinearLayout>
+    <TextView android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="@string/endTime" 
+            android:id="@+id/TextView02" 
+            android:textSize="16sp">
+    </TextView>
+    <LinearLayout android:id="@+id/linearLayout3"
+          android:layout_width="fill_parent" 
+          android:layout_height="wrap_content">  
+      <TextView android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="TextView" 
+            android:id="@+id/endDate" 
+            android:textSize="24sp">
+      </TextView>
+      <TextView android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="TextView" 
+            android:id="@+id/endTime" 
+            android:layout_marginLeft="20dp" 
+            android:textSize="24sp">
+      </TextView>
+    </LinearLayout>
+    <CheckBox android:text="@string/allday" 
+        android:layout_height="wrap_content" 
+        android:id="@+id/allDay" 
+        android:layout_width="wrap_content" 
+        android:textSize="24sp"
+        android:checked="false">
+    </CheckBox>
+    <TextView android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:text="@string/repetition" 
+        android:id="@+id/textView1" 
+        android:textSize="16sp">
+    </TextView>
+    <Spinner
+        android:id="@+id/Spinner01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/listRepetition"
+        android:layout_weight="1"
+    />
+    <TextView android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:text="@string/place" 
+        android:id="@+id/textView1" 
+        android:textSize="16sp">
+    </TextView>
+    <EditText android:layout_height="wrap_content" 
+        android:text="" 
+        android:layout_width="fill_parent" 
+        android:hint="@string/place"
+        android:id="@+id/where">
+    </EditText>
+    <TextView android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:text="@string/content" 
+        android:id="@+id/textView2" 
+        android:textSize="16sp">
+   </TextView>
+   <EditText android:layout_height="wrap_content" 
+        android:text="" 
+        android:layout_width="fill_parent" 
+        android:id="@+id/content" 
+        android:minLines="8"
+        android:hint="@string/content"
+        android:gravity="top">
+   </EditText>
+   <ListView 
+    android:layout_height="120sp" 
+    android:id="@+id/listView1" 
+    android:layout_width="fill_parent"
+    android:layout_weight="1"
+    ></ListView>
+    <LinearLayout android:id="@+id/linearLayout3"
+          android:layout_width="fill_parent" 
+          android:layout_height="wrap_content">  
+      <TextView android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="@string/addNotification" 
+            android:id="@+id/textView5" 
+            android:textSize="18sp"
+            android:layout_weight="1">
+      </TextView>
+      <Button android:layout_width="wrap_content" 
+        android:text="@string/plus" 
+        android:layout_height="wrap_content" 
+        android:id="@+id/plus" 
+        android:layout_alignParentLeft="true"
+        android:layout_weight="1">
+      </Button>
+    </LinearLayout>
+  </LinearLayout>
+  </ScrollView>
+  <LinearLayout android:id="@+id/linearLayout3"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal">
+    <Button android:layout_width="fill_parent" 
+        android:text="@string/discard" 
+        android:layout_height="wrap_content" 
+        android:id="@+id/discard" 
+        android:layout_alignParentLeft="true"
+        android:layout_weight="1">
+    </Button>
+    <Button android:layout_width="fill_parent" 
+        android:layout_alignParentTop="true" 
+        android:layout_height="wrap_content" 
+        android:id="@+id/save" 
+        android:text="@string/save" 
+        android:layout_alignParentRight="true"
+        android:layout_weight="1">
+    </Button>
+    <Button android:layout_width="fill_parent" 
+        android:layout_alignParentTop="true" 
+        android:layout_height="wrap_content" 
+        android:id="@+id/delete" 
+        android:text="@string/delete" 
+        android:layout_alignParentRight="true"
+        android:layout_weight="1">
+    </Button>
+  </LinearLayout>
+</LinearLayout>
