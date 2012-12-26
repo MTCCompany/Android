@@ -46,6 +46,7 @@ public final class R {
         public static final int detailDate=0x7f0b0018;
         public static final int discard=0x7f0b002b;
         public static final int discardCode=0x7f0b0005;
+        public static final int edit=0x7f0b0030;
         public static final int endDate=0x7f0b0022;
         public static final int endTime=0x7f0b0023;
         public static final int eventList=0x7f0b0019;
@@ -54,17 +55,19 @@ public final class R {
         public static final int linearLayout2=0x7f0b001d;
         public static final int linearLayout3=0x7f0b0021;
         public static final int listView1=0x7f0b0028;
-        public static final int minus=0x7f0b002e;
+        public static final int minus=0x7f0b0031;
         public static final int nextMonth=0x7f0b000e;
+        public static final int notification=0x7f0b002f;
         public static final int plus=0x7f0b002a;
         public static final int prevMonth=0x7f0b000c;
         public static final int relativeLayout1=0x7f0b0004;
+        public static final int repetition=0x7f0b002e;
         public static final int save=0x7f0b002c;
         public static final int saveCode=0x7f0b0006;
         public static final int schedule=0x7f0b000b;
         public static final int startDate=0x7f0b001e;
         public static final int startTime=0x7f0b001f;
-        public static final int syncMenu=0x7f0b002f;
+        public static final int syncMenu=0x7f0b0032;
         public static final int tableLayout1=0x7f0b0009;
         public static final int tableRow1=0x7f0b000f;
         public static final int textView1=0x7f0b0002;
@@ -83,7 +86,8 @@ public final class R {
         public static final int eventcalendar=0x7f030003;
         public static final int eventdetail=0x7f030004;
         public static final int eventeditor=0x7f030005;
-        public static final int notification=0x7f030006;
+        public static final int eventshow=0x7f030006;
+        public static final int notification=0x7f030007;
     }
     public static final class menu {
         public static final int menu=0x7f0a0000;
@@ -101,12 +105,16 @@ public final class R {
         public static final int deleteConfirm=0x7f080015;
         public static final int deleteOK=0x7f080014;
         public static final int discard=0x7f080011;
+        public static final int edit=0x7f080021;
         public static final int endTime=0x7f08000c;
         public static final int friday=0x7f080006;
         public static final int minus=0x7f08001f;
         public static final int monday=0x7f080002;
         public static final int newEvent=0x7f080012;
         public static final int nextMonth=0x7f080009;
+        public static final int noContent=0x7f080023;
+        public static final int noNotification=0x7f080024;
+        public static final int noWhere=0x7f080022;
         public static final int noevents=0x7f08001b;
         public static final int notification=0x7f08001a;
         public static final int nowOnSync=0x7f080019;

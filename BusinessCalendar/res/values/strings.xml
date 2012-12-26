@@ -33,4 +33,8 @@
 	<string name="plus">＋</string>
 	<string name="minus">－</string>
 	<string name="repetition">繰り返し</string>
+	<string name="edit">編集</string>
+	<string name="noWhere">場所なし</string>
+	<string name="noContent">説明なし</string>
+	<string name="noNotification">通知なし</string>
 </resources>

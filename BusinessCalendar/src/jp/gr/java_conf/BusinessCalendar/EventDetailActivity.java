@@ -50,7 +50,7 @@ public class EventDetailActivity extends Activity  implements OnItemLongClickLis
 		mEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
 				// Intentを作成
-				Intent intent = new Intent(EventDetailActivity.this,EventEditorActivity.class);
+				Intent intent = new Intent(EventDetailActivity.this,EventShowActivity.class);
 				// ArrayAdapterの型を「EventInfo」クラスにまとめる
 				EventInfo event = (EventInfo)parent.getAdapter().getItem(position);
 				// IDと日付の文字列をExtraにセット
